@@ -29,10 +29,22 @@ public class Matrix {
             for(int r = 0; r < mRows; r++) {
                 Scanner sc = new Scanner(System.in);
                 String tmp = sc.nextLine();
-                System.out.println(tmp);
-                mMatrix[r][c] = sc.nextInt();
+                String[] splittedInpult = tmp.split(" ");
+                //TODO: input like: 1 enter 2 enter 3 enter etc
+                //TODO: input like: 1 2 3 4 5 etc
+                //TODO: hybrid
             }
         }
+    }
+
+    public int[][] multiply(int multiplier) {
+        int[][] mtx = new int[this.mRows][this.mColums];
+        for(int c = 0; c < mColums; c++) {
+            for (int r = 0; r < mRows; r++) {
+                mtx[c][r] = this.mMatrix[c][r];
+            }
+        }
+        return mtx;
     }
 
     public static void main(String[] args) {
