@@ -5,6 +5,7 @@ public class Matrix {
     private int mRows;
     private int mColums;
     private int[][] mMatrix;
+    private int size;
 
     public Matrix(int rows, int columns) {
         this.mRows = rows;
@@ -13,7 +14,8 @@ public class Matrix {
     }
 
     private void createMatrix() {
-        mMatrix = new int[mRows][mColums];
+        this.mMatrix = new int[mRows][mColums];
+        this.size = mColums*mRows;
     }
 
     public void print() {
@@ -34,18 +36,17 @@ public class Matrix {
     }
 
     private String[] enterValues() {
-        int elemN = mColums*mRows;
-        String[] inputValues = new String[elemN];
-        for (int i = 0; i < elemN; ) {
+        String[] inputValues = new String[size];
+        for (int i = 0; i < size; ) {
             Scanner sc = new Scanner(System.in);
             String tmp = sc.nextLine();
             tmp = tmp.replaceAll("[\\s]{2,}", " ");
             String[] splittedInpult = tmp.split(" ");
             for (int k = 0; k < splittedInpult.length; k++) {
-                if (i >= elemN) {
+                if (i >= size) {
                     break;
                 }
-                inputValues[i] = splittedInpult[k];
+                inputValues[ i ] = splittedInpult[ k ];
                 i++;
             }
         }
@@ -55,21 +56,40 @@ public class Matrix {
     private void fillMatrix(String[] inputValues) {
         for (int c = 0, i = 0 ; c < mColums; c++) {
             for (int r = 0; r < mRows; r++, i++) {
-                if (inputValues[i] == null) {
-                    continue;
-                }
-                mMatrix[c][r] = Integer.parseInt(inputValues[i]);
+                mMatrix[ c ][ r ] = Integer.parseInt(inputValues[ i ]);
             }
         }
     }
 
-    public int[][] multiply(int multiplier) {
-        int[][] mtx = new int[this.mRows][this.mColums];
+    public int getRows() {
+        return mRows;
+    }
+
+    public int getColumns() {
+        return mColums;
+    }
+
+    public void multiply(int multiplier) {
         for (int c = 0; c < mColums; c++) {
             for (int r = 0; r < mRows; r++) {
-                mtx[c][r] = this.mMatrix[c][r];
+                mMatrix[ c ][ r ] *= multiplier;
             }
         }
-        return mtx;
+    }
+
+    public static Matrix multiplyMatrixes(Matrix mtx1, Matrix mtx2) {
+        if(mtx1.mRows != mtx2.mColums) {
+            return null;
+        }
+        Matrix resMtx = new Matrix(mtx1.mRows, mtx2.mColums);
+
+        for(int i = 0; i < mtx1.mRows; i++) {
+            for(int j = 0; j < mtx2.mColums; j++) {
+                for(int m = 0; m < mtx1.mColums; m++) {
+                    resMtx.mMatrix[i][j] += (mtx1.mMatrix[i][m] * mtx2.mMatrix[m][j]);
+                }
+            }
+        }
+        return resMtx;
     }
 }

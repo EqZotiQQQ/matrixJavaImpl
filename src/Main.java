@@ -4,8 +4,13 @@ public class Main {
         //  mtx.print();
         mtx.set();
         mtx.print();
-        mtx.multiply(5);
-        mtx.print();
+        //mtx.multiply(5);
+       // mtx.print();
+        Matrix mtx2 = new Matrix(3,3);
+        mtx2.set();
+        mtx2.print();
+        Matrix res = Matrix.multiplyMatrixes(mtx, mtx2);
+        res.print();
     }
 }
 
