@@ -1,5 +1,6 @@
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public class Matrix {
     private int mRows;
@@ -41,9 +42,43 @@ public class Matrix {
         }
     }
 
-    public void set() {
-        String[] inputValues = enterValues();
+    public void set(String... args) {
+        String[] inputValues;
+        if(args.length != 0) {
+            inputValues = fileInput(args[0]);
+        } else {
+            inputValues = enterValues();
+        }
         fillMatrix(inputValues);
+    }
+
+    private String[] fileInput(String filePath) {
+        String[] result = new String[size];
+        File file = new File(filePath);
+        BufferedReader reader;
+        try {
+            if(!file.exists()) {
+                file.createNewFile();
+                return null;
+            }
+            int i = 0;
+            reader = new BufferedReader(new FileReader(file));
+            String tempStr = reader.readLine();
+            while ((tempStr != null) && (i < size)) {
+                String[] temp = tempStr.split("[\\s]{1,}");
+                for(int j = 0; j < temp.length; j++) {
+                    result[i] = temp[j];
+                    i++;
+                }
+                tempStr = reader.readLine();
+
+            }
+        } catch (FileNotFoundException fnfe) {
+
+        } catch (IOException ioe) {
+
+        }
+        return result;
     }
 
     private String[] enterValues() {
@@ -51,8 +86,7 @@ public class Matrix {
         for (int i = 0; i < size; ) {
             Scanner sc = new Scanner(System.in);
             String tmp = sc.nextLine();
-            tmp = tmp.replaceAll("[\\s]{2,}", " ");
-            String[] splittedInpult = tmp.split(" ");
+            String[] splittedInpult = tmp.split("[\\s]{1,}");
             for (int k = 0; k < splittedInpult.length; k++) {
                 if (i >= size) {
                     break;
