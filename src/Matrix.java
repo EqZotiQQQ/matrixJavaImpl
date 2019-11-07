@@ -7,6 +7,17 @@ public class Matrix {
     private int[][] mMatrix;
     private int size;
 
+    public Matrix(Matrix mtx) {
+        this.mRows = mtx.mRows;
+        this.mColums = mtx.mColums;
+        createMatrix();
+        for(int i = 0; i < this.mRows; i++) {
+            for(int j = 0; j < this.mColums; j++) {
+                this.mMatrix[j][i] = mtx.mMatrix[j][i];
+            }
+        }
+    }
+
     public Matrix(int rows, int columns) {
         this.mRows = rows;
         this.mColums = columns;
@@ -86,10 +97,15 @@ public class Matrix {
         for(int i = 0; i < mtx1.mRows; i++) {
             for(int j = 0; j < mtx2.mColums; j++) {
                 for(int m = 0; m < mtx1.mColums; m++) {
-                    resMtx.mMatrix[i][j] += (mtx1.mMatrix[i][m] * mtx2.mMatrix[m][j]);
+                    resMtx.mMatrix[ i ][ j ] += (mtx1.mMatrix[ i ][ m ] * mtx2.mMatrix[ m ][ j ]);
                 }
             }
         }
         return resMtx;
     }
+/*
+    public void transposition() {
+        Matrix mtx = new Matrix(mRows, mColums);
+        this.mMatrix
+    }*/
 }
