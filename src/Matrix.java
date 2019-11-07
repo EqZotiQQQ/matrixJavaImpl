@@ -71,7 +71,6 @@ public class Matrix {
                     i++;
                 }
                 tempStr = reader.readLine();
-
             }
         } catch (FileNotFoundException fnfe) {
 
@@ -99,9 +98,10 @@ public class Matrix {
     }
 
     private void fillMatrix(String[] inputValues) {
-        for (int c = 0, i = 0 ; c < mColums; c++) {
-            for (int r = 0; r < mRows; r++, i++) {
-                mMatrix[ c ][ r ] = Integer.parseInt(inputValues[ i ]);
+        for (int r = 0, i = 0 ; r < mRows; r++) {
+            for (int c = 0; c < mColums; c++, i++) {
+                System.out.println(Integer.parseInt(inputValues[ i ]));
+                mMatrix[ r ][ c ] = Integer.parseInt(inputValues[ i ]);
             }
         }
     }
@@ -137,9 +137,14 @@ public class Matrix {
         }
         return resMtx;
     }
-/*
-    public void transposition() {
-        Matrix mtx = new Matrix(mRows, mColums);
-        this.mMatrix
-    }*/
+
+    public Matrix transposition() {
+        Matrix mtx = new Matrix(mColums, mRows);
+        for(int i = 0; i < mRows; ++i) {
+            for(int j = 0; j < mColums; ++j) {
+                mtx.mMatrix[i][j] = this.mMatrix[j][i];
+            }
+        }
+        return mtx;
+    }
 }
