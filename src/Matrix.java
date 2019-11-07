@@ -1,5 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Matrix {
@@ -46,12 +46,14 @@ public class Matrix {
         String[] inputValues;
         if(args.length != 0) {
             inputValues = fileInput(args[0]);
+          //  inputValues = Optional.of(fileInput(args[0]));
         } else {
             inputValues = enterValues();
         }
         fillMatrix(inputValues);
     }
 
+    // private Optional<String[]> fileInput(String filePath) {
     private String[] fileInput(String filePath) {
         String[] result = new String[size];
         File file = new File(filePath);
@@ -69,6 +71,7 @@ public class Matrix {
             }
         } catch (IOException ioe) {}
         return result;
+        //return Optional.of(result);
     }
 
     private String[] enterValues() {
