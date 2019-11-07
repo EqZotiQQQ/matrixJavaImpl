@@ -1,31 +1,16 @@
 public class Main {
-    static Matrix mtx;
+    static Matrix mtx1;
+    static Matrix mtx2;
     public static void main(String[] args) {
-        mtx = new Matrix(3,3);
+        mtx1 = new Matrix(3,3);
+        mtx2 = new Matrix(3,3);
+        mtx1.set("matrix1.txt");
+        mtx2.set("matrix2.txt");
 
-
-        mtx.set("matrixes.txt");
-        mtx.print();
-
-
-
-        //multiplyTst(mtx);
-
-    }
-
-    public static void setMatrixFromFileTst(Matrix mtx) {
-
-    }
-
-    public static void multiplyTst( Matrix mtx) {
-        mtx.multiply(5);
-        System.out.println("Matrix A * 5 = ");
-        mtx.print();
-        Matrix mtx2 = new Matrix(3,3);
-        mtx2.set();
-        Matrix res = Matrix.multiplyMatrixes(mtx, mtx2);
-        System.out.println("Matrix A * Matrix B = ");
-        res.print();
+        System.out.println("Matrix A:");
+        mtx1.print();
+        System.out.println("Matrix B:");
+        mtx2.print();
     }
 }
 
