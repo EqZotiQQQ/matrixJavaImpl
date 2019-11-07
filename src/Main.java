@@ -16,6 +16,9 @@ public class Main {
         System.out.println("Matrix C:");
         mtx3.print();
 
+        Matrix mtx3T = mtx3.transposition();
+        mtx3T.print();
+
     }
 }
 

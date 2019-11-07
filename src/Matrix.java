@@ -55,14 +55,9 @@ public class Matrix {
     private String[] fileInput(String filePath) {
         String[] result = new String[size];
         File file = new File(filePath);
-        BufferedReader reader;
-        try {
-            if(!file.exists()) {
-                file.createNewFile();
-                return null;
-            }
+        if (!file.exists()) return null;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             int i = 0;
-            reader = new BufferedReader(new FileReader(file));
             String tempStr = reader.readLine();
             while ((tempStr != null) && (i < size)) {
                 String[] temp = tempStr.split("[\\s]{1,}");
@@ -72,11 +67,7 @@ public class Matrix {
                 }
                 tempStr = reader.readLine();
             }
-        } catch (FileNotFoundException fnfe) {
-
-        } catch (IOException ioe) {
-
-        }
+        } catch (IOException ioe) {}
         return result;
     }
 
@@ -140,8 +131,8 @@ public class Matrix {
 
     public Matrix transposition() {
         Matrix mtx = new Matrix(mColums, mRows);
-        for(int i = 0; i < mRows; ++i) {
-            for(int j = 0; j < mColums; ++j) {
+        for(int i = 0; i < mColums; ++i) {
+            for(int j = 0; j < mRows; ++j) {
                 mtx.mMatrix[i][j] = this.mMatrix[j][i];
             }
         }
