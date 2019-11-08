@@ -46,7 +46,7 @@ public class Matrix {
         String[] inputValues;
         if(args.length != 0) {
             inputValues = fileInput(args[0]);
-          //  inputValues = Optional.of(fileInput(args[0]));
+          //  inputValues = Optional.of(fileInput(args[0]));            //another case if i want to return null if we have no file
         } else {
             inputValues = enterValues();
         }
@@ -57,7 +57,12 @@ public class Matrix {
     private String[] fileInput(String filePath) {
         String[] result = new String[size];
         File file = new File(filePath);
-        if (!file.exists()) return null;
+        if (!file.exists())  {              //case when i want to return matrix of 0 if file doens't exist
+            for(int i = 0; i < result.length; i++) {
+                result[i] = "0";
+            }
+            return result;
+        }
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             int i = 0;
             String tempStr = reader.readLine();
@@ -71,7 +76,7 @@ public class Matrix {
             }
         } catch (IOException ioe) {}
         return result;
-        //return Optional.of(result);
+        //return Optional.of(result);       //another case if i want to return null if we have no file
     }
 
     private String[] enterValues() {
@@ -140,5 +145,19 @@ public class Matrix {
             }
         }
         return mtx;
+    }
+
+    public static Matrix add(Matrix a, Matrix b) throws Exception {
+        if(a.mColums != b.mColums || a.mRows != b.mRows) {
+            throw new Exception();
+            //return //TODO optional;
+        }
+        Matrix c = new Matrix(a.mRows, a.mColums);
+        for(int row = 0; row <c.mRows; row++) {
+            for (int col = 0; col < c.mColums; col++) {
+                c.mMatrix[row][col] = a.mMatrix[row][col] +  b.mMatrix[row][col];
+            }
+        }
+        return c;
     }
 }

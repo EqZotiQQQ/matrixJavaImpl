@@ -1,23 +1,18 @@
 public class Main {
-    static Matrix mtx1;
-    static Matrix mtx2;
-    static Matrix mtx3;
+    static Matrix A;
+    static Matrix B;
+    static Matrix C;
     public static void main(String[] args) {
-       // mtx1 = new Matrix(3,3);
-       // mtx2 = new Matrix(3,3);
-        mtx3 = new Matrix(2,4);
-       // mtx1.set("matrix_square_1.txt");
-       // mtx2.set("matrix_square_2.txt");
-        mtx3.set("matrix_for_transponation.txt");
-       // System.out.println("Matrix A:");
-       // mtx1.print();
-       // System.out.println("Matrix B:");
-       // mtx2.print();
-        System.out.println("Matrix C:");
-        mtx3.print();
-
-        Matrix mtx3T = mtx3.transposition();
-        mtx3T.print();
+        A = new Matrix(3,3);
+        B = new Matrix(3,3);
+        A.set("matrix_square_1.txt");
+        B.set("matrix_square_2.txt");
+        try {
+            C = Matrix.add(A, B);
+        } catch(Exception e) {
+            System.out.println("ex");
+        }
+        C.print();
 
     }
 }
