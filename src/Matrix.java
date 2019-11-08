@@ -192,17 +192,24 @@ public class Matrix {
         return determinant;
     }
 
-    private int calcSums() {
-        int res = 0;
+    private Matrix generateAdditionalMatrix() {
         Matrix mtx = new Matrix(mRows, mColums * 2 - 1);
         for(int r = 0; r < mRows; r++) {
             for(int c = 0; c < mColums; c++) {
                 mtx.mMatrix[r][c] = this.mMatrix[r][c];
-                for(int nC = mColums; nC < mColums + r; nC++) {
-                    mtx.mMatrix[r][nC] = mtx.mMatrix[r][nC - mColums];
-                }
             }
         }
+        for(int r = 0; r < mRows; r++) {
+            for(int c = mColums; c < mColums * 2 - 1; c++) {
+                mtx.mMatrix[r][c] = mtx.mMatrix[r][c-mColums];
+            }
+        }
+        return mtx;
+    }
+
+    private int calcSums() {
+        Matrix mtx = generateAdditionalMatrix();
+        int res = 0;
         mtx.print();
         return res;
     }
