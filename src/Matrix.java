@@ -119,11 +119,17 @@ public class Matrix {
         }
     }
 
-    public static Matrix multiplyMatrixes(Matrix mtx1, Matrix mtx2) {
+    public static Matrix multiplyMatrixes(Matrix mtx1, Matrix mtx2) throws Exception {
         if(mtx1.mRows != mtx2.mColums) {
-            return null;
+            throw new Exception();
         }
         Matrix resMtx = new Matrix(mtx1.mRows, mtx2.mColums);
+        for(int i = 0; i < resMtx.mRows; i++) {
+            for (int j = 0; j < resMtx.mColums; j++) {
+                System.out.print(resMtx.mMatrix[i][j]);
+            }
+            System.out.println();
+        }
 
         for(int i = 0; i < mtx1.mRows; i++) {
             for(int j = 0; j < mtx2.mColums; j++) {
@@ -174,11 +180,7 @@ public class Matrix {
     }
 
     public boolean isSquareMatrix() {
-        if(mColums == mRows) {
-            return true;
-        } else {
-            return false;
-        }
+        return mColums == mRows;
     }
 
     public int getDeterminant() throws Exception{
