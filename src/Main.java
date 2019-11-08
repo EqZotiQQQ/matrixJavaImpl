@@ -13,7 +13,12 @@ public class Main {
             System.out.println("ex");
         }
         C.print();
-
+        System.out.println(C.isMatrixOf(0));
+        try {
+            A.getDeterminant();
+        } catch(Exception e) {
+            System.out.println("ex");
+        }
     }
 }
 

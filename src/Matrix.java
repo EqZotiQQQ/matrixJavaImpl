@@ -1,5 +1,7 @@
+//TODO probable i need to use class Either or Optional to avoid throwing of exceptions
+//TODO rework input from file.
+
 import java.io.*;
-import java.util.Optional;
 import java.util.Scanner;
 
 public class Matrix {
@@ -19,7 +21,7 @@ public class Matrix {
         }
     }
 
-    public Matrix(int rows, int columns) {
+    public Matrix(final int rows, final int columns) {
         this.mRows = rows;
         this.mColums = columns;
         createMatrix();
@@ -46,14 +48,12 @@ public class Matrix {
         String[] inputValues;
         if(args.length != 0) {
             inputValues = fileInput(args[0]);
-          //  inputValues = Optional.of(fileInput(args[0]));            //another case if i want to return null if we have no file
         } else {
             inputValues = enterValues();
         }
         fillMatrix(inputValues);
     }
 
-    // private Optional<String[]> fileInput(String filePath) {
     private String[] fileInput(String filePath) {
         String[] result = new String[size];
         File file = new File(filePath);
@@ -76,7 +76,6 @@ public class Matrix {
             }
         } catch (IOException ioe) {}
         return result;
-        //return Optional.of(result);       //another case if i want to return null if we have no file
     }
 
     private String[] enterValues() {
@@ -99,7 +98,6 @@ public class Matrix {
     private void fillMatrix(String[] inputValues) {
         for (int r = 0, i = 0 ; r < mRows; r++) {
             for (int c = 0; c < mColums; c++, i++) {
-                System.out.println(Integer.parseInt(inputValues[ i ]));
                 mMatrix[ r ][ c ] = Integer.parseInt(inputValues[ i ]);
             }
         }
@@ -148,9 +146,8 @@ public class Matrix {
     }
 
     public static Matrix add(Matrix a, Matrix b) throws Exception {
-        if(a.mColums != b.mColums || a.mRows != b.mRows) {
+        if((a.mColums != b.mColums) || (a.mRows != b.mRows)) {
             throw new Exception();
-            //return //TODO optional;
         }
         Matrix c = new Matrix(a.mRows, a.mColums);
         for(int row = 0; row <c.mRows; row++) {
@@ -160,4 +157,54 @@ public class Matrix {
         }
         return c;
     }
+
+    public boolean isMatrixOfZeros() {
+        return isMatrixOf(0);
+    }
+
+    public boolean isMatrixOf(final int value) {
+        for(int r = 0; r < mRows; r++) {
+            for(int c = 0; c < mColums; c++) {
+                if(mMatrix[r][c] != value) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean isSquareMatrix() {
+        if(mColums == mRows) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int getDeterminant() throws Exception{
+        if(isSquareMatrix() == false) {
+            throw new Exception();
+        }
+        int determinant = 0;
+
+        calcSums();
+
+        return determinant;
+    }
+
+    private int calcSums() {
+        int res = 0;
+        Matrix mtx = new Matrix(mRows, mColums * 2 - 1);
+        for(int r = 0; r < mRows; r++) {
+            for(int c = 0; c < mColums; c++) {
+                mtx.mMatrix[r][c] = this.mMatrix[r][c];
+                for(int nC = mColums; nC < mColums + r; nC++) {
+                    mtx.mMatrix[r][nC] = mtx.mMatrix[r][nC - mColums];
+                }
+            }
+        }
+        mtx.print();
+        return res;
+    }
+
 }
