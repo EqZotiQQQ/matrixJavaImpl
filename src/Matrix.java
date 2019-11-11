@@ -114,7 +114,6 @@ public class Matrix {
     public void multiply(int multiplier) {
         for (int c = 0; c < mColums; c++) {
             for (int r = 0; r < mRows; r++) {
-                System.out.println(mMatrix[ c ][ r ] + " c: " + c + " r: " + r);
                 mMatrix[ c ][ r ] *= multiplier;
             }
         }
@@ -125,12 +124,6 @@ public class Matrix {
             throw new Exception();
         }
         Matrix resMtx = new Matrix(mtx1.mRows, mtx2.mColums);
-        for (int c = 0; c < resMtx.mColums; c++) {
-            for(int r = 0; r < resMtx.mRows; r++) {
-                System.out.print(resMtx.mMatrix[c][r]);
-            }
-            System.out.println();
-        }
 
         for(int r1 = 0; r1 < mtx1.mRows; r1++) {
             for(int c2 = 0; c2 < mtx2.mColums; c2++) {
@@ -181,13 +174,11 @@ public class Matrix {
     }
 
     public boolean isSquareMatrix() {
-        System.out.println(this.mColums+" "+this.mRows + " " + (mColums == mRows));
         return mColums == mRows;
     }
 
     public int getDeterminant() throws Exception{
         if(!isSquareMatrix()) {
-            System.out.println("here");
             throw new Exception();
         }
         int determinant = 0;
