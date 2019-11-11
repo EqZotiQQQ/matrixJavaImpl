@@ -16,7 +16,7 @@ public class Matrix {
         createMatrix();
         for(int c = 0; c < this.mColums; c++) {
             for(int r = 0; r < this.mRows; r++) {
-                this.mMatrix[r][c] = mtx.mMatrix[r][c];
+                this.mMatrix[c][r] = mtx.mMatrix[c][r];
             }
         }
     }
@@ -28,7 +28,7 @@ public class Matrix {
     }
 
     private void createMatrix() {
-        this.mMatrix = new int[mRows][mColums];
+        this.mMatrix = new int[mColums][mRows];
         this.size = mColums*mRows;
     }
 
@@ -98,7 +98,7 @@ public class Matrix {
     private void fillMatrix(String[] inputValues) {
         for (int c = 0, i = 0 ; c < mColums; c++) {
             for (int r = 0; r < mRows; r++, i++) {
-                mMatrix[ r ][ c ] = Integer.parseInt(inputValues[ i ]);
+                mMatrix[ c ][ r ] = Integer.parseInt(inputValues[ i ]);
             }
         }
     }
@@ -114,6 +114,7 @@ public class Matrix {
     public void multiply(int multiplier) {
         for (int c = 0; c < mColums; c++) {
             for (int r = 0; r < mRows; r++) {
+                System.out.println(mMatrix[ c ][ r ] + " c: " + c + " r: " + r);
                 mMatrix[ c ][ r ] *= multiplier;
             }
         }
