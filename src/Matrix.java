@@ -96,8 +96,8 @@ public class Matrix {
     }
 
     private void fillMatrix(String[] inputValues) {
-        for (int r = 0, i = 0 ; r < mRows; r++) {
-            for (int c = 0; c < mColums; c++, i++) {
+        for (int c = 0, i = 0 ; c < mColums; c++) {
+            for (int r = 0; r < mRows; r++, i++) {
                 mMatrix[ r ][ c ] = Integer.parseInt(inputValues[ i ]);
             }
         }
@@ -143,9 +143,9 @@ public class Matrix {
 
     public Matrix transposition() {
         Matrix mtx = new Matrix(mColums, mRows);
-        for(int i = 0; i < mColums; ++i) {
-            for(int j = 0; j < mRows; ++j) {
-                mtx.mMatrix[i][j] = this.mMatrix[j][i];
+        for(int c = 0; c < mColums; ++c) {
+            for(int r = 0; r < mRows; ++r) {
+                mtx.mMatrix[c][r] = this.mMatrix[r][c];
             }
         }
         return mtx;
