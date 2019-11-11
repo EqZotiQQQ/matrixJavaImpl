@@ -28,17 +28,17 @@ public class Matrix {
     }
 
     private void createMatrix() {
-        this.mMatrix = new int[mColums][mRows];
+        this.mMatrix = new int[mRows][mColums];
         this.size = mColums*mRows;
     }
 
     public void print() {
         int x = 0;
-        for(int[] rows : mMatrix) {
+        for(int c = 0; c < this.mColums; c++) {
             x++;
             System.out.print("| ");
-            for(int column : rows) {
-                System.out.print(column + " ");
+            for(int r = 0; r < this.mRows; r++) {
+                System.out.print(mMatrix[r][c] + " ");
             }
             System.out.println("|");
         }
@@ -98,7 +98,7 @@ public class Matrix {
     private void fillMatrix(String[] inputValues) {
         for (int c = 0, i = 0 ; c < mColums; c++) {
             for (int r = 0; r < mRows; r++, i++) {
-                mMatrix[ c ][ r ] = Integer.parseInt(inputValues[ i ]);
+                mMatrix[ r ][ c ] = Integer.parseInt(inputValues[ i ]);
             }
         }
     }
@@ -114,7 +114,8 @@ public class Matrix {
     public void multiply(int multiplier) {
         for (int c = 0; c < mColums; c++) {
             for (int r = 0; r < mRows; r++) {
-                mMatrix[ c ][ r ] *= multiplier;
+                System.out.println("val: " + mMatrix[ r ][ c ] + " c: " + c + " r: " + r);
+                mMatrix[ r ][ c ] *= multiplier;
             }
         }
     }
@@ -139,7 +140,7 @@ public class Matrix {
         Matrix mtx = new Matrix(mColums, mRows);
         for(int c = 0; c < mColums; ++c) {
             for(int r = 0; r < mRows; ++r) {
-                mtx.mMatrix[c][r] = this.mMatrix[r][c];
+                mtx.mMatrix[r][c] = this.mMatrix[r][c];
             }
         }
         return mtx;
@@ -152,7 +153,7 @@ public class Matrix {
         Matrix c = new Matrix(a.mRows, a.mColums);
         for (int col = 0; col < c.mColums; col++) {
             for(int row = 0; row <c.mRows; row++) {
-                c.mMatrix[col][row] = a.mMatrix[col][row] +  b.mMatrix[col][row];
+                c.mMatrix[row][col] = a.mMatrix[row][col] +  b.mMatrix[row][col];
             }
         }
         return c;
@@ -165,7 +166,7 @@ public class Matrix {
     public boolean isMatrixOf(final int value) {
         for(int c = 0; c < mColums; c++) {
             for(int r = 0; r < mRows; r++) {
-                if(mMatrix[c][r] != value) {
+                if(mMatrix[r][c] != value) {
                     return false;
                 }
             }
@@ -192,12 +193,12 @@ public class Matrix {
         Matrix mtx = new Matrix(mRows, mColums * 2 - 1);
         for(int c = 0; c < mColums; c++) {
             for(int r = 0; r < mRows; r++) {
-                mtx.mMatrix[c][r] = this.mMatrix[c][r];
+                mtx.mMatrix[r][c] = this.mMatrix[r][c];
             }
         }
         for(int c = mColums; c < mColums * 2 - 1; c++) {
             for(int r = 0; r < mRows; r++) {
-                mtx.mMatrix[c][r] = mtx.mMatrix[c][r-mColums];
+                mtx.mMatrix[r][c] = mtx.mMatrix[r-mColums][c];
             }
         }
         return mtx;
