@@ -180,11 +180,13 @@ public class Matrix {
     }
 
     public boolean isSquareMatrix() {
+        System.out.println(this.mColums+" "+this.mRows + " " + (mColums == mRows));
         return mColums == mRows;
     }
 
     public int getDeterminant() throws Exception{
-        if(isSquareMatrix() == false) {
+        if(!isSquareMatrix()) {
+            System.out.println("here");
             throw new Exception();
         }
         int determinant = 0;
