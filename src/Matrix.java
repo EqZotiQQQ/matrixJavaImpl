@@ -33,11 +33,9 @@ public class Matrix {
     }
 
     public void print() {
-        int x = 0;
-        for(int c = 0; c < this.mColums; c++) {
-            x++;
-            System.out.print("| ");
-            for(int r = 0; r < this.mRows; r++) {
+        for(int r = 0; r < mRows; r++) {
+            System.out.print(" | ");
+            for(int c = 0; c < mColums; c++) {
                 System.out.print(mMatrix[r][c] + " ");
             }
             System.out.println("|");
@@ -52,6 +50,14 @@ public class Matrix {
             inputValues = enterValues();
         }
         fillMatrix(inputValues);
+    }
+
+    private void fillMatrix(String[] inputValues) {
+        for (int r = 0, i = 0 ; r < mRows; r++) {
+            for (int c = 0; c < mColums; c++, i++) {
+                mMatrix[r][c] = Integer.parseInt(inputValues[ i ]);
+            }
+        }
     }
 
     private String[] fileInput(String filePath) {
@@ -95,13 +101,7 @@ public class Matrix {
         return inputValues;
     }
 
-    private void fillMatrix(String[] inputValues) {
-        for (int c = 0, i = 0 ; c < mColums; c++) {
-            for (int r = 0; r < mRows; r++, i++) {
-                mMatrix[ r ][ c ] = Integer.parseInt(inputValues[ i ]);
-            }
-        }
-    }
+
 
     public int getRows() {
         return mRows;
