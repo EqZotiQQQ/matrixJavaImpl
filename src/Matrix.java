@@ -111,8 +111,6 @@ public class Matrix {
         return inputValues;
     }
 
-
-
     public int getRows() {
         return mRows;
     }
@@ -144,8 +142,6 @@ public class Matrix {
         }
         return resMtx;
     }
-
-
 
     public static Matrix add(Matrix a, Matrix b) throws Exception {
         if((a.mColums != b.mColums) || (a.mRows != b.mRows)) {
@@ -183,11 +179,7 @@ public class Matrix {
         if(!isSquareMatrix()) {
             throw new Exception();
         }
-        int determinant = 0;
-
-        calcSums();
-
-        return determinant;
+        return calculateDeterminant();
     }
 
     private Matrix generateAdditionalMatrix() {
@@ -205,12 +197,23 @@ public class Matrix {
         return mtx;
     }
 
-    private int calcSums() {
+    private int calculateDeterminant() {
         Matrix mtx = generateAdditionalMatrix();
-
         int res = 0;
-        mtx.print();
+        for(int i = 0; i < mColums; i++) {
+            int mult = 1;
+            for(int k = 0; k < mColums; k++) {
+                mult *= mtx.mMatrix[k][k+i];
+            }
+            res += mult;
+        }
+        for(int i = 0; i < mColums; i++) {
+            int mult = 1;
+            for(int k = this.mColums-1, j = this.mColums-1; k < mtx.mColums; k++, j--) {
+                mult *= mtx.mMatrix[this.mRows - 1 - j][mtx.mColums - 1 - k + i];
+            }
+            res -= mult;
+        }
         return res;
     }
-
 }

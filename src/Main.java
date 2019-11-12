@@ -9,7 +9,6 @@ public class Main {
         A = new Matrix(3,3);
         A.set("matrix_square_1.txt");
         A.print();
-/*
         System.out.println("Matrix B:");
         B = new Matrix(3,3);
         B.set("matrix_square_2.txt");
@@ -29,11 +28,11 @@ public class Main {
         E = new Matrix(2,4);
         E.set("matrix_for_transponation.txt");
         E.print();
-*/
+
         System.out.println("A*5=");
         A.multiply(5);
         A.print();
-/*
+
         System.out.println("E*5=");
         E.multiply(5);
         E.print();
@@ -73,10 +72,11 @@ public class Main {
         } catch(Exception e) {
             System.out.println("Multiply Exception AxD");
         }
-*/
+
         try {
-            System.out.println("Determinant of A:");
-            A.getDeterminant();
+            System.out.print("Determinant of A = ");
+            int det = A.getDeterminant();
+            System.out.println(det);
         } catch (Exception e) {
             System.out.println("Determinant Exception");
         }
