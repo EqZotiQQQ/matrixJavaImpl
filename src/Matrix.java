@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Matrix {
     private int mRows;
     private int mColums;
-    private int[][] mMatrix;
+    private double[][] mMatrix;
     private int size;
 
     public Matrix(Matrix mtx) {
@@ -38,7 +38,7 @@ public class Matrix {
     }
 
     private void createMatrix() {
-        this.mMatrix = new int[mRows][mColums];
+        this.mMatrix = new double[mRows][mColums];
         this.size = mColums*mRows;
     }
 
@@ -127,6 +127,16 @@ public class Matrix {
         }
     }
 
+    public static Matrix multiply(Matrix mtx, double multiplier) {
+        Matrix resMtx = new Matrix(mtx.mRows, mtx.mColums);
+        for (int c = 0; c < mtx.mColums; c++) {
+            for (int r = 0; r < mtx.mRows; r++) {
+                resMtx.mMatrix[r][c] = mtx.mMatrix[ r ][ c ] * multiplier;
+            }
+        }
+        return resMtx;
+    }
+
     public static Matrix multiplyMatrixes(Matrix mtx1, Matrix mtx2) throws Exception {
         if(mtx1.mRows != mtx2.mColums) {
             throw new Exception();
@@ -175,7 +185,7 @@ public class Matrix {
         return mColums == mRows;
     }
 
-    public int getDeterminant() throws Exception{
+    public double getDeterminant() throws Exception{
         if(!isSquareMatrix()) {
             throw new Exception();
         }
@@ -197,8 +207,15 @@ public class Matrix {
         return mtx;
     }
 
-    private int calculateDeterminant() {
+    private double calculateDeterminant() {
+        if(mColums == 1) {
+            return mMatrix[0][0];
+        }
+        if(mColums == 2) {
+            return mMatrix[0][0]*mMatrix[1][1]-mMatrix[0][1]*mMatrix[1][0];
+        }
         Matrix mtx = generateAdditionalMatrix();
+
         int res = 0;
         for(int i = 0; i < mColums; i++) {
             int mult = 1;
@@ -216,4 +233,74 @@ public class Matrix {
         }
         return res;
     }
+
+    private Matrix calculateMatrixOfMinor() {
+        Matrix matrixOfMinor = new Matrix(this.mRows, this.mColums);
+        for(int c = 0; c < mColums; c++) {
+            for( int r = 0; r < mRows; r++) {
+                matrixOfMinor.mMatrix[c][r] = this.calculateMinorValue(c, r);
+            }
+        }
+        return matrixOfMinor;
+    }
+
+    private double calculateMinorValue(int c, int r) {
+        double minor = 0;
+        Matrix minorMatrix = new Matrix(this.mRows-1, this.mColums-1);
+        for(int cc = 0, mc = 0; cc < this.mColums; cc++) {
+            if(cc == c) {
+                continue;
+            }
+            for (int rr = 0, mr = 0; rr < this.mRows; rr++) {
+                if(rr == r)
+                {
+                    continue;
+                }
+                minorMatrix.mMatrix[mc][mr] = this.mMatrix[cc][rr];
+                mr++;
+            }
+            mc++;
+        }
+        try {
+            minor = minorMatrix.getDeterminant();
+        } catch(Exception e) {
+            System.out.println("Exception in getDeterminant-calculateMinorValue-calculateMatrixOfMinor-getReveseMatrix");
+        }
+        return minor;
+    }
+
+    private Matrix MatrixOfAlgebraicAddtitions() {
+        Matrix maa = new Matrix(this);
+        int k = 0;
+        for(int c = 0; c < this.mColums; c++) {
+            for(int r = 0; r < this.mRows; r++) {
+                if((k % 2) != 0) {
+                    maa.mMatrix[c][r] = -maa.mMatrix[c][r];
+                }
+                k++;
+            }
+        }
+        return maa;
+    }
+
+    public Matrix getReverseMatrix() {
+        Matrix resMatrix;
+        double detResMatrix = 0;
+        try {
+            detResMatrix = this.getDeterminant();
+            if(detResMatrix == 0) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            System.out.println("getDetterminant exception in reverse Matrix");
+        }
+        Matrix matrixOfMinors = calculateMatrixOfMinor();
+        Matrix matrixOfAdditionals = matrixOfMinors.MatrixOfAlgebraicAddtitions();
+        resMatrix = Matrix.multiply(matrixOfAdditionals, 1/detResMatrix);
+
+        return resMatrix;
+    }
+
+
+
 }
