@@ -27,6 +27,16 @@ public class Matrix {
         createMatrix();
     }
 
+    public Matrix transposition() {
+        Matrix mtx = new Matrix(mColums, mRows);
+        for(int r = 0; r < mColums; ++r) {
+            for(int c = 0; c < mRows; ++c) {
+                mtx.mMatrix[r][c] = this.mMatrix[c][r];
+            }
+        }
+        return mtx;
+    }
+
     private void createMatrix() {
         this.mMatrix = new int[mRows][mColums];
         this.size = mColums*mRows;
@@ -114,7 +124,6 @@ public class Matrix {
     public void multiply(int multiplier) {
         for (int c = 0; c < mColums; c++) {
             for (int r = 0; r < mRows; r++) {
-                System.out.println("val: " + mMatrix[ r ][ c ] + " c: " + c + " r: " + r);
                 mMatrix[ r ][ c ] *= multiplier;
             }
         }
@@ -136,15 +145,7 @@ public class Matrix {
         return resMtx;
     }
 
-    public Matrix transposition() {
-        Matrix mtx = new Matrix(mColums, mRows);
-        for(int c = 0; c < mColums; ++c) {
-            for(int r = 0; r < mRows; ++r) {
-                mtx.mMatrix[r][c] = this.mMatrix[r][c];
-            }
-        }
-        return mtx;
-    }
+
 
     public static Matrix add(Matrix a, Matrix b) throws Exception {
         if((a.mColums != b.mColums) || (a.mRows != b.mRows)) {
@@ -198,7 +199,7 @@ public class Matrix {
         }
         for(int c = mColums; c < mColums * 2 - 1; c++) {
             for(int r = 0; r < mRows; r++) {
-                mtx.mMatrix[r][c] = mtx.mMatrix[r-mColums][c];
+                mtx.mMatrix[r][c] = mtx.mMatrix[r][c-mColums];
             }
         }
         return mtx;
@@ -206,6 +207,7 @@ public class Matrix {
 
     private int calcSums() {
         Matrix mtx = generateAdditionalMatrix();
+
         int res = 0;
         mtx.print();
         return res;
