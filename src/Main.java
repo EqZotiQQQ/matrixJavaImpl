@@ -83,6 +83,13 @@ public class Main {
         System.out.println("Revers matrix for A:");
         Matrix G = A.getReverseMatrix();
         G.print();
+        try {
+            Matrix H = Matrix.multiplyMatrixes(A, G);
+            System.out.println("Matrix H:");
+            H.print();
+        } catch (Exception e) {
+
+        }
     }
 }
 

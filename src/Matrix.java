@@ -1,5 +1,6 @@
 //TODO probable i need to use class Either or Optional to avoid throwing of exceptions
 //TODO rework input from file.
+import java.lang.Math;
 
 import java.io.*;
 import java.util.Scanner;
@@ -104,7 +105,7 @@ public class Matrix {
                 if (i >= size) {
                     break;
                 }
-                inputValues[ i ] = splittedInpult[ k ];
+                inputValues[i] = splittedInpult[k];
                 i++;
             }
         }
@@ -131,7 +132,7 @@ public class Matrix {
         Matrix resMtx = new Matrix(mtx.mRows, mtx.mColums);
         for (int c = 0; c < mtx.mColums; c++) {
             for (int r = 0; r < mtx.mRows; r++) {
-                resMtx.mMatrix[r][c] = mtx.mMatrix[ r ][ c ] * multiplier;
+                resMtx.mMatrix[r][c] = mtx.mMatrix[r][c] * multiplier;
             }
         }
         return resMtx;
@@ -146,8 +147,15 @@ public class Matrix {
         for(int r1 = 0; r1 < mtx1.mRows; r1++) {
             for(int c2 = 0; c2 < mtx2.mColums; c2++) {
                 for(int c1 = 0; c1 < mtx1.mColums; c1++) {
-                    resMtx.mMatrix[ r1 ][ c2 ] += (mtx1.mMatrix[ r1 ][ c1 ] * mtx2.mMatrix[ c1 ][ c2 ]);
+                    resMtx.mMatrix[r1][c2] += mtx1.mMatrix[r1][c1] * mtx2.mMatrix[c1][c2];
                 }
+            }
+        }
+
+
+        for (int c = 0; c < resMtx.mColums; c++) {
+            for (int r = 0; r < resMtx.mRows; r++) {
+                resMtx.mMatrix[r][c] = Math.floor(resMtx.mMatrix[r][c]);
             }
         }
         return resMtx;
@@ -271,13 +279,17 @@ public class Matrix {
 
     private Matrix MatrixOfAlgebraicAddtitions() {
         Matrix maa = new Matrix(this);
-        int k = 0;
         for(int c = 0; c < this.mColums; c++) {
             for(int r = 0; r < this.mRows; r++) {
-                if((k % 2) != 0) {
-                    maa.mMatrix[c][r] = -maa.mMatrix[c][r];
+                if (c % 2 == 0) {
+                    if (r % 2 != 0) {
+                        maa.mMatrix[c][r] = -this.mMatrix[c][r];
+                    }
+                } else {
+                    if (r % 2 == 0) {
+                        maa.mMatrix[c][r] = -this.mMatrix[c][r];
+                    }
                 }
-                k++;
             }
         }
         return maa;
@@ -296,8 +308,8 @@ public class Matrix {
         }
         Matrix matrixOfMinors = calculateMatrixOfMinor();
         Matrix matrixOfAdditionals = matrixOfMinors.MatrixOfAlgebraicAddtitions();
-        resMatrix = Matrix.multiply(matrixOfAdditionals, 1/detResMatrix);
-
+        Matrix tMatrixOfAdditionals = matrixOfAdditionals.transposition();
+        resMatrix = Matrix.multiply(tMatrixOfAdditionals, 1/detResMatrix);
         return resMatrix;
     }
 
