@@ -6,7 +6,7 @@ public class Main {
     static Matrix E;
     public static void main(String[] args) {
         System.out.println("Matrix A:");
-        A = new Matrix(3,3);
+        A = new Matrix(4,4);
         A.set("matrix_square_1.txt");
         A.print();
         /*System.out.println("Matrix B:");

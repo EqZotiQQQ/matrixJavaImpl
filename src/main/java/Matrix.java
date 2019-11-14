@@ -197,7 +197,18 @@ public class Matrix {
         if(!isSquareMatrix()) {
             throw new Exception();
         }
-        return calculateDeterminant();
+        double determinant = 0;
+        if (this.mColums == 1) {
+            determinant = singleElementMatrixDeterminant();
+        } else if (this.mColums == 2) {
+            determinant = quadElementsMatrixDeterminant();
+        } else if (this.mColums == 3) {
+            determinant = methodOfTriangles();
+       // } else {
+       //     determinant = method()
+       // }
+
+        return determinant;
     }
 
     private Matrix generateAdditionalMatrix() {
@@ -215,13 +226,15 @@ public class Matrix {
         return mtx;
     }
 
-    private double calculateDeterminant() {
-        if(mColums == 1) {
-            return mMatrix[0][0];
-        }
-        if(mColums == 2) {
-            return mMatrix[0][0]*mMatrix[1][1]-mMatrix[0][1]*mMatrix[1][0];
-        }
+    private double singleElementMatrixDeterminant() {
+        return mMatrix[0][0];
+    }
+
+    private double quadElementsMatrixDeterminant() {
+        return mMatrix[0][0] * mMatrix[1][1] - mMatrix[0][1] * mMatrix[1][0];
+    }
+
+    private double methodOfTriangles() {
         Matrix mtx = generateAdditionalMatrix();
 
         int res = 0;
@@ -300,6 +313,7 @@ public class Matrix {
         double detResMatrix = 0;
         try {
             detResMatrix = this.getDeterminant();
+            System.out.println(detResMatrix);
             if(detResMatrix == 0) {
                 throw new Exception();
             }
