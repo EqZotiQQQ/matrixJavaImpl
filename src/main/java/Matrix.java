@@ -250,14 +250,21 @@ public class Matrix {
 
         for(int r = 0; r < mRows; r++) {
             for(int i = 0; i < r; i++) {
-                System.out.println("step: " + r);
-                double coefficient = this.mMatrix[r][i] / this.mMatrix[0][i];
+                double coefficient = this.mMatrix[r][i] / this.mMatrix[r-1][i];     //ощ
                 System.out.println("coef: " + coefficient);
+
                 for(int c = 0; c < mColums; c++) {
-                    if(this.mMatrix[r][c+i] > this.mMatrix[i][c+i]) {
-                        this.mMatrix[r][c + i] = this.mMatrix[r][c + i] - this.mMatrix[i][c + i] * coefficient;
+                    if(this.mMatrix[i][c] == 0) {
+                        continue;
+                    }
+                    System.out.println("row: " + r + "; column: " + c + "; number of zeros: " + i);
+                    double tempValue = this.mMatrix[i][c] * coefficient;
+                    System.out.println("temp: " + tempValue);
+                    System.out.println("matr i c = " + this.mMatrix[i][c]);
+                    if(tempValue > this.mMatrix[i][c]) {
+                        this.mMatrix[r][c] = this.mMatrix[r][c] - tempValue;
                     } else {
-                        this.mMatrix[r][c + i] = this.mMatrix[r][c + i] + this.mMatrix[i][c + i] * coefficient;
+                        this.mMatrix[r][c] = this.mMatrix[r][c] + tempValue;
                     }
                 }
                 this.print();
