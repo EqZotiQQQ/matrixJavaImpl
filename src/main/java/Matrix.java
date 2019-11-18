@@ -1,5 +1,6 @@
 //TODO probable i need to use class Either or Optional to avoid throwing of exceptions
 //TODO rework input from file.
+
 import java.lang.Math;
 
 import java.io.*;
@@ -10,6 +11,29 @@ public class Matrix {
     private int mColums;
     private double[][] mMatrix;
     private int size;
+
+    @Override
+    public int hashCode() {
+        //TODO
+
+        return 1;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(int c = 0, n = 0; c < this.mColums; c++) {
+            for(int r = 0; r < this.mRows; r++, n++) {
+                sb.append(Double.toString(this.mMatrix[c][r]));
+                if(n == (size - 1)) {
+                    break;
+                }
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
+    }
+
 
     public Matrix(Matrix mtx) {
         this.mRows = mtx.mRows;
@@ -41,6 +65,16 @@ public class Matrix {
     private void createMatrix() {
         this.mMatrix = new double[mRows][mColums];
         this.size = mColums*mRows;
+    }
+
+    public void printRound() {
+        for(int r = 0; r < mRows; r++) {
+            System.out.print(" | ");
+            for(int c = 0; c < mColums; c++) {
+                System.out.print((int)mMatrix[r][c] + " ");
+            }
+            System.out.println("|");
+        }
     }
 
     public void print() {
@@ -143,7 +177,6 @@ public class Matrix {
             throw new Exception();
         }
         Matrix resMtx = new Matrix(mtx1.mRows, mtx2.mColums);
-
         for(int r1 = 0; r1 < mtx1.mRows; r1++) {
             for(int c2 = 0; c2 < mtx2.mColums; c2++) {
                 for(int c1 = 0; c1 < mtx1.mColums; c1++) {
@@ -202,14 +235,39 @@ public class Matrix {
             determinant = singleElementMatrixDeterminant();
         } else if (this.mColums == 2) {
             determinant = quadElementsMatrixDeterminant();
-        } else if (this.mColums == 3) {
-            determinant = methodOfTriangles();
-       // } else {
-       //     determinant = method()
-       // }
+        //} else if (this.mColums == 3) {
+        //    determinant = methodOfTriangles();
+        } else {
+            determinant = methodForN();
+        }
 
         return determinant;
     }
+
+    private int methodForN() {
+        System.out.println("before:");
+        this.print();
+
+        for(int r = 0; r < mRows; r++) {
+            System.out.println("step: " + r);
+            for(int i = 0; i < r; i++) {
+                double coefficient = this.mMatrix[r][i] / this.mMatrix[0][i];
+                System.out.println("coef: " + coefficient);
+                for(int c = 0; c < mColums; c++) {
+                   this.mMatrix[r][c+i] = this.mMatrix[r][c+i] + this.mMatrix[i][c+i] * coefficient;
+                }
+            }
+            this.print();
+        }
+
+
+
+
+        System.out.println("after:");
+        this.print();
+        return 1;
+    }
+
 
     private Matrix generateAdditionalMatrix() {
         Matrix mtx = new Matrix(mRows, mColums * 2 - 1);
@@ -313,7 +371,7 @@ public class Matrix {
         double detResMatrix = 0;
         try {
             detResMatrix = this.getDeterminant();
-            System.out.println(detResMatrix);
+            //System.out.println(detResMatrix);
             if(detResMatrix == 0) {
                 throw new Exception();
             }

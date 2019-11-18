@@ -6,9 +6,11 @@ public class Main {
     static Matrix E;
     public static void main(String[] args) {
         System.out.println("Matrix A:");
-        A = new Matrix(4,4);
+        A = new Matrix(3,3);
         A.set("matrix_square_1.txt");
-        A.print();
+        //A.printRound();
+        //String str = A.toString();
+        //System.out.println(str);
         /*System.out.println("Matrix B:");
         B = new Matrix(3,3);
         B.set("matrix_square_2.txt");
@@ -80,13 +82,13 @@ public class Main {
         } catch (Exception e) {
             System.out.println("Determinant Exception");
         }*/
-        System.out.println("Revers matrix for A:");
+        //System.out.println("Revers matrix for A:");
         Matrix G = A.getReverseMatrix();
-        G.print();
+        //G.printRound();
         try {
-            Matrix H = Matrix.multiplyMatrixes(A, G);
-            System.out.println("Matrix H:");
-            H.print();
+         // Matrix H = Matrix.multiplyMatrixes(A, G);
+          //System.out.println("Matrix H:");
+          //H.printRound();
         } catch (Exception e) {
 
         }
