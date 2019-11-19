@@ -248,32 +248,28 @@ public class Matrix {
         System.out.println("before:");
         this.print();
 
-        for(int r = 0; r < mRows; r++) {
+        for(int r = 1; r < mRows; r++) {
             for(int i = 0; i < r; i++) {
-                double coefficient = this.mMatrix[r][i] / this.mMatrix[r-1][i];     //ощ
-                System.out.println("coef: " + coefficient);
-
-                for(int c = 0; c < mColums; c++) {
-                    if(this.mMatrix[i][c] == 0) {
-                        continue;
+                double coefficient = this.mMatrix[r][i] / this.mMatrix[i][i];
+                boolean minus =  this.mMatrix[i][i] * coefficient > this.mMatrix[r][i];
+                if(!minus) {
+                    for(int c = 0; c < mColums; c++) {
+                        if(this.mMatrix[i][c] == 0) {
+                            continue;
+                        }
+                        this.mMatrix[r][c] = this.mMatrix[r][c] - this.mMatrix[i][c] * coefficient;
                     }
-                    System.out.println("row: " + r + "; column: " + c + "; number of zeros: " + i);
-                    double tempValue = this.mMatrix[i][c] * coefficient;
-                    System.out.println("temp: " + tempValue);
-                    System.out.println("matr i c = " + this.mMatrix[i][c]);
-                    if(tempValue > this.mMatrix[i][c]) {
-                        this.mMatrix[r][c] = this.mMatrix[r][c] - tempValue;
-                    } else {
-                        this.mMatrix[r][c] = this.mMatrix[r][c] + tempValue;
+                } else {
+                    for(int c = 0; c < mColums; c++) {
+                        if (this.mMatrix[i][c] == 0) {
+                            continue;
+                        }
+                        this.mMatrix[r][c] = this.mMatrix[r][c] + this.mMatrix[i][c] * coefficient;
                     }
                 }
                 this.print();
             }
-
         }
-
-
-
 
         System.out.println("after:");
         this.print();
