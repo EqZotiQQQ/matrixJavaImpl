@@ -235,8 +235,8 @@ public class Matrix {
             determinant = singleElementMatrixDeterminant();
         } else if (this.mColums == 2) {
             determinant = quadElementsMatrixDeterminant();
-        //} else if (this.mColums == 3) {
-        //    determinant = methodOfTriangles();
+        } else if (this.mColums == 3) {
+            determinant = methodOfTriangles();
         } else {
             determinant = methodForN();
         }
@@ -245,8 +245,7 @@ public class Matrix {
     }
 
     private int methodForN() {
-        System.out.println("before:");
-        this.print();
+        int determinant = 1;
 
         for(int r = 1; r < mRows; r++) {
             for(int i = 0; i < r; i++) {
@@ -267,13 +266,10 @@ public class Matrix {
                         this.mMatrix[r][c] = this.mMatrix[r][c] + this.mMatrix[i][c] * coefficient;
                     }
                 }
-                this.print();
             }
+            determinant *= this.mMatrix[r][r];
         }
-
-        System.out.println("after:");
-        this.print();
-        return 1;
+        return determinant;
     }
 
 
@@ -374,12 +370,11 @@ public class Matrix {
         return maa;
     }
 
-    public Matrix getReverseMatrix() {
+    public Matrix invertibleMatrix() {
         Matrix resMatrix;
         double detResMatrix = 0;
         try {
             detResMatrix = this.getDeterminant();
-            //System.out.println(detResMatrix);
             if(detResMatrix == 0) {
                 throw new Exception();
             }
