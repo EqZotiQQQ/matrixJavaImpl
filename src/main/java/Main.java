@@ -6,9 +6,15 @@ public class Main {
     static Matrix E;
     public static void main(String[] args) {
         System.out.println("Matrix A:");
-        A = new Matrix(4,4);
+        A = new Matrix(5, 5);
         A.set("matrix_square_1.txt");
         A.printRound();
+        try {
+            double x = A.getDeterminant();
+            System.out.println("det = " + x);
+        } catch(Exception e) {
+
+        }
         //String str = A.toString();
         //System.out.println(str);
         /*System.out.println("Matrix B:");
@@ -88,7 +94,7 @@ public class Main {
         try {
           Matrix H = Matrix.multiplyMatrixes(A, G);
           System.out.println("Matrix H:");
-          H.printRound();
+          H.print();
         } catch (Exception e) {
 
         }

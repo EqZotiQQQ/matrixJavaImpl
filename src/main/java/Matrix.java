@@ -1,5 +1,6 @@
 //TODO probable i need to use class Either or Optional to avoid throwing of exceptions
 //TODO rework input from file.
+//TODO probably i need to leave fraction 3/5 5/22 etc instead of 3.2 2.1 etc
 
 import java.lang.Math;
 
@@ -188,7 +189,7 @@ public class Matrix {
 
         for (int c = 0; c < resMtx.mColums; c++) {
             for (int r = 0; r < resMtx.mRows; r++) {
-                resMtx.mMatrix[r][c] = Math.floor(resMtx.mMatrix[r][c]);
+                resMtx.mMatrix[r][c] = Math.round(resMtx.mMatrix[r][c]);
             }
         }
         return resMtx;
@@ -245,29 +246,31 @@ public class Matrix {
     }
 
     private int methodForN() {
+
+        Matrix mtx = new Matrix(this);
         int determinant = 1;
 
         for(int r = 1; r < mRows; r++) {
             for(int i = 0; i < r; i++) {
-                double coefficient = this.mMatrix[r][i] / this.mMatrix[i][i];
-                boolean minus =  this.mMatrix[i][i] * coefficient > this.mMatrix[r][i];
+                double coefficient = mtx.mMatrix[r][i] / mtx.mMatrix[i][i];
+                boolean minus =  mtx.mMatrix[i][i] * coefficient > mtx.mMatrix[r][i];
                 if(!minus) {
                     for(int c = 0; c < mColums; c++) {
-                        if(this.mMatrix[i][c] == 0) {
+                        if(mtx.mMatrix[i][c] == 0) {
                             continue;
                         }
-                        this.mMatrix[r][c] = this.mMatrix[r][c] - this.mMatrix[i][c] * coefficient;
+                        mtx.mMatrix[r][c] = mtx.mMatrix[r][c] - mtx.mMatrix[i][c] * coefficient;
                     }
                 } else {
                     for(int c = 0; c < mColums; c++) {
-                        if (this.mMatrix[i][c] == 0) {
+                        if (mtx.mMatrix[i][c] == 0) {
                             continue;
                         }
-                        this.mMatrix[r][c] = this.mMatrix[r][c] + this.mMatrix[i][c] * coefficient;
+                        mtx.mMatrix[r][c] = mtx.mMatrix[r][c] + mtx.mMatrix[i][c] * coefficient;
                     }
                 }
             }
-            determinant *= this.mMatrix[r][r];
+            determinant *= mtx.mMatrix[r][r];
         }
         return determinant;
     }
