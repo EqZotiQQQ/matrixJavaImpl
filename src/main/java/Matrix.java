@@ -9,10 +9,7 @@ import java.util.Scanner;
 public class Matrix {
     private int mRows;
     private int mColums;
-<<<<<<< HEAD
-=======
     private MyPair[][] mMtx;
->>>>>>> 963dac5... added common fractions
     private double[][] mMatrix;
     private int size;
 
@@ -43,42 +40,28 @@ public class Matrix {
         this.mRows = mtx.mRows;
         this.mColums = mtx.mColums;
         createMatrix();
-        for(int c = 0; c < this.mColums; c++) {
-            for(int r = 0; r < this.mRows; r++) {
-                this.mMtx[c][r].setKey(mtx.mMtx[c][r].getKey());
-                this.mMtx[c][r].setValue(mtx.mMtx[c][r].getValue());
+        for(int r = 0; r < this.mRows; r++) {
+            for(int c = 0; c < this.mColums; c++) {
+                this.mMtx[r][c].setKey(mtx.mMtx[r][c].getKey());
+                this.mMtx[r][c].setValue(mtx.mMtx[r][c].getValue());
             }
         }
     }
 
-<<<<<<< HEAD
+
     public Matrix(final int rows, final int columns) {
         this.mRows = rows;
         this.mColums = columns;
         createMatrix();
     }
 
-    public Matrix transposition() {
-        Matrix mtx = new Matrix(mColums, mRows);
-        for(int r = 0; r < mColums; ++r) {
-            for(int c = 0; c < mRows; ++c) {
-                mtx.mMatrix[r][c] = this.mMatrix[c][r];
-=======
     private void createMatrix() {
         this.mMtx = new MyPair[mRows][mColums];
         for(int r = 0; r < mRows; r++) {
             for(int c = 0; c < mColums; c++) {
-                this.mMtx[r][c] = new MyPair();
->>>>>>> 963dac5... added common fractions
+                this.mMtx[r][c] = new MyPair(0, 0);
             }
         }
-        return mtx;
-    }
-
-<<<<<<< HEAD
-    private void createMatrix() {
-        this.mMatrix = new double[mRows][mColums];
-        this.size = mColums*mRows;
     }
 
     public void printRound() {
@@ -91,21 +74,17 @@ public class Matrix {
         }
     }
 
-=======
->>>>>>> 963dac5... added common fractions
     public void print() {
         for(int r = 0; r < mRows; r++) {
             System.out.print(" | ");
             for(int c = 0; c < mColums; c++) {
-<<<<<<< HEAD
+
                 System.out.print(mMatrix[r][c] + " ");
-=======
                 if(mMtx[r][c].getValue() == 1) {
                     System.out.print(mMtx[r][c].key + " ");
                 } else {
                     System.out.print(mMtx[r][c].key + "/" + mMtx[r][c].value + " ");
                 }
->>>>>>> 963dac5... added common fractions
             }
             System.out.println("|");
         }
@@ -124,7 +103,7 @@ public class Matrix {
     private void fillMatrix(String[] inputValues) {
         for (int r = 0, i = 0 ; r < mRows; r++) {
             for (int c = 0; c < mColums; c++, i++) {
-                mMtx[r][c].key = Integer.parseInt(inputValues[ i ]);
+                mMtx[r][c].key = Integer.parseInt(inputValues[i]);
                 mMtx[r][c].value = 1;
             }
         }
