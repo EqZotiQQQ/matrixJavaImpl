@@ -3,13 +3,16 @@
 //TODO probably i need to leave fraction 3/5 5/22 etc instead of 3.2 2.1 etc
 
 import java.lang.Math;
-
 import java.io.*;
 import java.util.Scanner;
 
 public class Matrix {
     private int mRows;
     private int mColums;
+<<<<<<< HEAD
+=======
+    private MyPair[][] mMtx;
+>>>>>>> 963dac5... added common fractions
     private double[][] mMatrix;
     private int size;
 
@@ -42,11 +45,13 @@ public class Matrix {
         createMatrix();
         for(int c = 0; c < this.mColums; c++) {
             for(int r = 0; r < this.mRows; r++) {
-                this.mMatrix[c][r] = mtx.mMatrix[c][r];
+                this.mMtx[c][r].setKey(mtx.mMtx[c][r].getKey());
+                this.mMtx[c][r].setValue(mtx.mMtx[c][r].getValue());
             }
         }
     }
 
+<<<<<<< HEAD
     public Matrix(final int rows, final int columns) {
         this.mRows = rows;
         this.mColums = columns;
@@ -58,11 +63,19 @@ public class Matrix {
         for(int r = 0; r < mColums; ++r) {
             for(int c = 0; c < mRows; ++c) {
                 mtx.mMatrix[r][c] = this.mMatrix[c][r];
+=======
+    private void createMatrix() {
+        this.mMtx = new MyPair[mRows][mColums];
+        for(int r = 0; r < mRows; r++) {
+            for(int c = 0; c < mColums; c++) {
+                this.mMtx[r][c] = new MyPair();
+>>>>>>> 963dac5... added common fractions
             }
         }
         return mtx;
     }
 
+<<<<<<< HEAD
     private void createMatrix() {
         this.mMatrix = new double[mRows][mColums];
         this.size = mColums*mRows;
@@ -78,11 +91,21 @@ public class Matrix {
         }
     }
 
+=======
+>>>>>>> 963dac5... added common fractions
     public void print() {
         for(int r = 0; r < mRows; r++) {
             System.out.print(" | ");
             for(int c = 0; c < mColums; c++) {
+<<<<<<< HEAD
                 System.out.print(mMatrix[r][c] + " ");
+=======
+                if(mMtx[r][c].getValue() == 1) {
+                    System.out.print(mMtx[r][c].key + " ");
+                } else {
+                    System.out.print(mMtx[r][c].key + "/" + mMtx[r][c].value + " ");
+                }
+>>>>>>> 963dac5... added common fractions
             }
             System.out.println("|");
         }
@@ -101,7 +124,8 @@ public class Matrix {
     private void fillMatrix(String[] inputValues) {
         for (int r = 0, i = 0 ; r < mRows; r++) {
             for (int c = 0; c < mColums; c++, i++) {
-                mMatrix[r][c] = Integer.parseInt(inputValues[ i ]);
+                mMtx[r][c].key = Integer.parseInt(inputValues[ i ]);
+                mMtx[r][c].value = 1;
             }
         }
     }
@@ -155,19 +179,31 @@ public class Matrix {
         return mColums;
     }
 
+    public Matrix transposition() {
+        Matrix mtx = new Matrix(mColums, mRows);
+        for(int r = 0; r < mColums; ++r) {
+            for(int c = 0; c < mRows; ++c) {
+                mtx.mMtx[r][c].key = this.mMtx[c][r].key;
+                mtx.mMtx[r][c].value = this.mMtx[c][r].value;
+            }
+        }
+        return mtx;
+    }
+
     public void multiply(int multiplier) {
-        for (int c = 0; c < mColums; c++) {
-            for (int r = 0; r < mRows; r++) {
-                mMatrix[ r ][ c ] *= multiplier;
+        for (int r = 0; r < mRows; r++) {
+            for (int c = 0; c < mColums; c++) {
+                mMtx[r][c].key *= multiplier;
             }
         }
     }
 
-    public static Matrix multiply(Matrix mtx, double multiplier) {
+    //TODO probably there should be "double multiplier"... dunno
+    public static Matrix multiply(Matrix mtx, int multiplier) {
         Matrix resMtx = new Matrix(mtx.mRows, mtx.mColums);
         for (int c = 0; c < mtx.mColums; c++) {
             for (int r = 0; r < mtx.mRows; r++) {
-                resMtx.mMatrix[r][c] = mtx.mMatrix[r][c] * multiplier;
+                resMtx.mMtx[r][c].key = mtx.mMtx[r][c].key * multiplier;
             }
         }
         return resMtx;
@@ -181,15 +217,9 @@ public class Matrix {
         for(int r1 = 0; r1 < mtx1.mRows; r1++) {
             for(int c2 = 0; c2 < mtx2.mColums; c2++) {
                 for(int c1 = 0; c1 < mtx1.mColums; c1++) {
-                    resMtx.mMatrix[r1][c2] += mtx1.mMatrix[r1][c1] * mtx2.mMatrix[c1][c2];
+                    resMtx.mMtx[r1][c2].value += mtx1.mMtx[r1][c1].value * mtx2.mMtx[c1][c2].value;
+                    resMtx.mMtx[r1][c2].key += mtx1.mMtx[r1][c1].key * mtx2.mMtx[c1][c2].key;
                 }
-            }
-        }
-
-
-        for (int c = 0; c < resMtx.mColums; c++) {
-            for (int r = 0; r < resMtx.mRows; r++) {
-                resMtx.mMatrix[r][c] = Math.round(resMtx.mMatrix[r][c]);
             }
         }
         return resMtx;
@@ -373,7 +403,7 @@ public class Matrix {
         return maa;
     }
 
-    public Matrix invertibleMatrix() {
+    public void invertibleMatrix() {
         Matrix resMatrix;
         double detResMatrix = 0;
         try {
@@ -387,8 +417,9 @@ public class Matrix {
         Matrix matrixOfMinors = calculateMatrixOfMinor();
         Matrix matrixOfAdditionals = matrixOfMinors.MatrixOfAlgebraicAddtitions();
         Matrix tMatrixOfAdditionals = matrixOfAdditionals.transposition();
-        resMatrix = Matrix.multiply(tMatrixOfAdditionals, 1/detResMatrix);
-        return resMatrix;
+        //resMatrix = Matrix.multiply(tMatrixOfAdditionals, 1/detResMatrix);
+        return;// TODO Because here now I used int - I need to multiply
+        //return resMatrix;
     }
 
 

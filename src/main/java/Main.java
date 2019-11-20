@@ -8,6 +8,7 @@ public class Main {
         System.out.println("Matrix A:");
         A = new Matrix(5, 5);
         A.set("matrix_square_1.txt");
+<<<<<<< HEAD
         A.printRound();
         try {
             double x = A.getDeterminant();
@@ -95,6 +96,15 @@ public class Main {
           Matrix H = Matrix.multiplyMatrixes(A, G);
           System.out.println("Matrix H:");
           H.print();
+=======
+        A.print();
+
+        try {
+            System.out.println("here");
+            Matrix C = Matrix.multiplyMatrixes(A, A);
+            System.out.println("C:");
+            C.print();
+>>>>>>> 963dac5... added common fractions
         } catch (Exception e) {
 
         }
