@@ -1,90 +1,66 @@
 //TODO probable i need to use class Either or Optional to avoid throwing of exceptions
 //TODO rework input from file.
 //TODO probably i need to leave fraction 3/5 5/22 etc instead of 3.2 2.1 etc
+// сломался, когда спереди были пробелы
 
 import java.lang.Math;
 import java.io.*;
 import java.util.Scanner;
 
+import org.apache.commons.math3.fraction.Fraction;
+
+
 public class Matrix {
     private int mRows;
-    private int mColums;
-    private MyPair[][] mMtx;
-    private double[][] mMatrix;
-    private int size;
-
-    @Override
-    public int hashCode() {
-        //TODO
-
-        return 1;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for(int c = 0, n = 0; c < this.mColums; c++) {
-            for(int r = 0; r < this.mRows; r++, n++) {
-                sb.append(Double.toString(this.mMatrix[c][r]));
-                if(n == (size - 1)) {
-                    break;
-                }
-                sb.append(", ");
-            }
-        }
-        return sb.toString();
-    }
-
-
-    public Matrix(Matrix mtx) {
-        this.mRows = mtx.mRows;
-        this.mColums = mtx.mColums;
-        createMatrix();
-        for(int r = 0; r < this.mRows; r++) {
-            for(int c = 0; c < this.mColums; c++) {
-                this.mMtx[r][c].setKey(mtx.mMtx[r][c].getKey());
-                this.mMtx[r][c].setValue(mtx.mMtx[r][c].getValue());
-            }
-        }
-    }
-
+    private int mColumns;
+    private Fraction[][] mMatrix;
+    private int mSize;
 
     public Matrix(final int rows, final int columns) {
         this.mRows = rows;
-        this.mColums = columns;
+        this.mColumns = columns;
+        mSize = mRows*mColumns;
         createMatrix();
     }
 
-    private void createMatrix() {
-        this.mMtx = new MyPair[mRows][mColums];
-        for(int r = 0; r < mRows; r++) {
-            for(int c = 0; c < mColums; c++) {
-                this.mMtx[r][c] = new MyPair(0, 0);
+    public Matrix(Matrix mtx) {
+        this.mRows = mtx.mRows;
+        this.mColumns = mtx.mColumns;
+        mSize = mRows*mColumns;
+        createMatrix();
+        for(int r = 0; r < this.mRows; r++) {
+            for(int c = 0; c < this.mColumns; c++) {
+                this.mMatrix[r][c] = mtx.mMatrix[r][c];
             }
         }
     }
 
-    public void printRound() {
+    private void createMatrix() {
+        this.mMatrix = new Fraction[mRows][mColumns];
         for(int r = 0; r < mRows; r++) {
-            System.out.print(" | ");
-            for(int c = 0; c < mColums; c++) {
-                System.out.print((int)mMatrix[r][c] + " ");
+            for(int c = 0; c < mColumns; c++) {
+                this.mMatrix[r][c] = new Fraction(0,1);
             }
-            System.out.println("|");
         }
+    }
+
+    public int getRows() {
+        return mRows;
+    }
+
+    public int getColumns() {
+        return mColumns;
+    }
+
+    public boolean isSquareMatrix() {
+        return mColumns == mRows;
     }
 
     public void print() {
         for(int r = 0; r < mRows; r++) {
-            System.out.print(" | ");
-            for(int c = 0; c < mColums; c++) {
-
-                System.out.print(mMatrix[r][c] + " ");
-                if(mMtx[r][c].getValue() == 1) {
-                    System.out.print(mMtx[r][c].key + " ");
-                } else {
-                    System.out.print(mMtx[r][c].key + "/" + mMtx[r][c].value + " ");
-                }
+            System.out.print(" |\t");
+            for(int c = 0; c < mColumns; c++) {
+                System.out.print(mMatrix[r][c] + "\t");
             }
             System.out.println("|");
         }
@@ -102,15 +78,14 @@ public class Matrix {
 
     private void fillMatrix(String[] inputValues) {
         for (int r = 0, i = 0 ; r < mRows; r++) {
-            for (int c = 0; c < mColums; c++, i++) {
-                mMtx[r][c].key = Integer.parseInt(inputValues[i]);
-                mMtx[r][c].value = 1;
+            for (int c = 0; c < mColumns; c++, i++) {
+                mMatrix[r][c] = new Fraction(Double.valueOf(inputValues[i]));
             }
         }
     }
 
     private String[] fileInput(String filePath) {
-        String[] result = new String[size];
+        String[] result = new String[mSize];
         File file = new File(filePath);
         if (!file.exists())  {              //case when i want to return matrix of 0 if file doens't exist
             for(int i = 0; i < result.length; i++) {
@@ -119,9 +94,10 @@ public class Matrix {
             return result;
         }
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+
             int i = 0;
             String tempStr = reader.readLine();
-            while ((tempStr != null) && (i < size)) {
+            while ((tempStr != null) && (i < mSize)) {
                 String[] temp = tempStr.split("[\\s]{1,}");
                 for(int j = 0; j < temp.length; j++) {
                     result[i] = temp[j];
@@ -129,18 +105,20 @@ public class Matrix {
                 }
                 tempStr = reader.readLine();
             }
-        } catch (IOException ioe) {}
+        } catch (IOException ioe) {
+            System.out.println("ioex");
+        }
         return result;
     }
 
     private String[] enterValues() {
-        String[] inputValues = new String[size];
-        for (int i = 0; i < size; ) {
+        String[] inputValues = new String[mSize];
+        for (int i = 0; i < mSize; ) {
             Scanner sc = new Scanner(System.in);
             String tmp = sc.nextLine();
             String[] splittedInpult = tmp.split("[\\s]{1,}");
             for (int k = 0; k < splittedInpult.length; k++) {
-                if (i >= size) {
+                if (i >= mSize) {
                     break;
                 }
                 inputValues[i] = splittedInpult[k];
@@ -150,20 +128,11 @@ public class Matrix {
         return inputValues;
     }
 
-    public int getRows() {
-        return mRows;
-    }
-
-    public int getColumns() {
-        return mColums;
-    }
-
     public Matrix transposition() {
-        Matrix mtx = new Matrix(mColums, mRows);
-        for(int r = 0; r < mColums; ++r) {
+        Matrix mtx = new Matrix(mColumns, mRows);
+        for(int r = 0; r < mRows; ++r) {
             for(int c = 0; c < mRows; ++c) {
-                mtx.mMtx[r][c].key = this.mMtx[c][r].key;
-                mtx.mMtx[r][c].value = this.mMtx[c][r].value;
+                mtx.mMatrix[c][r] = this.mMatrix[r][c];
             }
         }
         return mtx;
@@ -171,33 +140,31 @@ public class Matrix {
 
     public void multiply(int multiplier) {
         for (int r = 0; r < mRows; r++) {
-            for (int c = 0; c < mColums; c++) {
-                mMtx[r][c].key *= multiplier;
+            for (int c = 0; c < mColumns; c++) {
+                mMatrix[r][c] = mMatrix[r][c].multiply(multiplier);
             }
         }
     }
 
-    //TODO probably there should be "double multiplier"... dunno
-    public static Matrix multiply(Matrix mtx, int multiplier) {
-        Matrix resMtx = new Matrix(mtx.mRows, mtx.mColums);
-        for (int c = 0; c < mtx.mColums; c++) {
-            for (int r = 0; r < mtx.mRows; r++) {
-                resMtx.mMtx[r][c].key = mtx.mMtx[r][c].key * multiplier;
+    public static Matrix multiply(Matrix mtx, double multiplier) {
+        Matrix resMtx = new Matrix(mtx.mRows, mtx.mColumns);
+        for (int c = 0; c < mtx.mColumns; c++) {
+            for (int r = 0; r < mtx.mRows; r++) {;
+                resMtx.mMatrix[r][c] = mtx.mMatrix[r][c].multiply(new Fraction(multiplier));
             }
         }
         return resMtx;
     }
 
-    public static Matrix multiplyMatrixes(Matrix mtx1, Matrix mtx2) throws Exception {
-        if(mtx1.mRows != mtx2.mColums) {
+    public static Matrix multiplyMatrises(Matrix mtx1, Matrix mtx2) throws Exception {
+        if(mtx1.mRows != mtx2.mColumns) {
             throw new Exception();
         }
-        Matrix resMtx = new Matrix(mtx1.mRows, mtx2.mColums);
+        Matrix resMtx = new Matrix(mtx1.mRows, mtx2.mColumns);
         for(int r1 = 0; r1 < mtx1.mRows; r1++) {
-            for(int c2 = 0; c2 < mtx2.mColums; c2++) {
-                for(int c1 = 0; c1 < mtx1.mColums; c1++) {
-                    resMtx.mMtx[r1][c2].value += mtx1.mMtx[r1][c1].value * mtx2.mMtx[c1][c2].value;
-                    resMtx.mMtx[r1][c2].key += mtx1.mMtx[r1][c1].key * mtx2.mMtx[c1][c2].key;
+            for(int c2 = 0; c2 < mtx2.mColumns; c2++) {
+                for(int c1 = 0; c1 < mtx1.mColumns; c1++) {
+                    resMtx.mMatrix[r1][c2] = resMtx.mMatrix[r1][c2].add(mtx1.mMatrix[r1][c1].multiply(mtx2.mMatrix[c1][c2]));
                 }
             }
         }
@@ -205,13 +172,13 @@ public class Matrix {
     }
 
     public static Matrix add(Matrix a, Matrix b) throws Exception {
-        if((a.mColums != b.mColums) || (a.mRows != b.mRows)) {
+        if((a.mColumns != b.mColumns) || (a.mRows != b.mRows)) {
             throw new Exception();
         }
-        Matrix c = new Matrix(a.mRows, a.mColums);
-        for (int col = 0; col < c.mColums; col++) {
+        Matrix c = new Matrix(a.mRows, a.mColumns);
+        for (int col = 0; col < c.mColumns; col++) {
             for(int row = 0; row <c.mRows; row++) {
-                c.mMatrix[row][col] = a.mMatrix[row][col] +  b.mMatrix[row][col];
+                c.mMatrix[row][col] = a.mMatrix[row][col].add(b.mMatrix[row][col]);
             }
         }
         return c;
@@ -222,9 +189,9 @@ public class Matrix {
     }
 
     public boolean isMatrixOf(final int value) {
-        for(int c = 0; c < mColums; c++) {
+        for(int c = 0; c < mColumns; c++) {
             for(int r = 0; r < mRows; r++) {
-                if(mMatrix[r][c] != value) {
+                if(mMatrix[r][c].intValue() != value) {
                     return false;
                 }
             }
@@ -232,8 +199,25 @@ public class Matrix {
         return true;
     }
 
-    public boolean isSquareMatrix() {
-        return mColums == mRows;
+    public int hashCode() {
+        //TODO
+
+        return 1;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(int c = 0, n = 0; c < this.mColumns; c++) {
+            for(int r = 0; r < this.mRows; r++, n++) {
+                sb.append(this.mMatrix[c][r].toString());
+                if(n == (mSize - 1)) {
+                    break;
+                }
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
     }
 
     public double getDeterminant() throws Exception{
@@ -241,140 +225,148 @@ public class Matrix {
             throw new Exception();
         }
         double determinant = 0;
-        if (this.mColums == 1) {
+        if (this.mColumns == 1) {
             determinant = singleElementMatrixDeterminant();
-        } else if (this.mColums == 2) {
+        } else if (this.mColumns == 2) {
             determinant = quadElementsMatrixDeterminant();
-        } else if (this.mColums == 3) {
+        } else if (this.mColumns == 3) {
             determinant = methodOfTriangles();
         } else {
             determinant = methodForN();
         }
-
         return determinant;
     }
 
-    private int methodForN() {
+    private double singleElementMatrixDeterminant() {
+        return mMatrix[0][0].doubleValue();
+    }
+
+    private double quadElementsMatrixDeterminant() {
+        return (mMatrix[0][0].multiply(mMatrix[1][1])).subtract(mMatrix[0][1].multiply(mMatrix[1][0])).doubleValue();
+    }
+
+    private double methodOfTriangles() {
+        Matrix mtx = generateAdditionalMatrix();
+        Fraction res = new Fraction(0);
+        for(int i = 0; i < mColumns; i++) {
+            Fraction addPart = new Fraction(1);
+            for(int k = 0; k < mColumns; k++) {
+                addPart = addPart.multiply(mtx.mMatrix[k][k+i]);
+            }
+            res = res.add(addPart);
+        }
+        for(int i = 0; i < mColumns; i++) {
+            Fraction subtractPart = new Fraction(1);
+            for(int k = this.mColumns-1, j = this.mColumns-1; k < mtx.mColumns; k++, j--) {
+                subtractPart = subtractPart.multiply(mtx.mMatrix[this.mRows - 1 - j][mtx.mColumns - 1 - k + i]);
+            }
+            res = res.subtract(subtractPart);
+        }
+        return res.doubleValue();
+    }
+
+    private double methodForN() {
 
         Matrix mtx = new Matrix(this);
-        int determinant = 1;
-
+        Fraction determinant = new Fraction(1);
         for(int r = 1; r < mRows; r++) {
             for(int i = 0; i < r; i++) {
-                double coefficient = mtx.mMatrix[r][i] / mtx.mMatrix[i][i];
-                boolean minus =  mtx.mMatrix[i][i] * coefficient > mtx.mMatrix[r][i];
+                double coeff = (mtx.mMatrix[r][i].divide(mtx.mMatrix[i][i])).doubleValue();
+                if(coeff == 0) {
+                    boolean check = false;
+                    for(int index = 0; index < mRows; index++) {
+                        if(!mMatrix[r][i].equals(0)) {
+                            check = true;
+                        }
+                    }
+                    if(check == false) {
+                        return 0;
+                    }
+                }
+                Fraction coefficient = new Fraction(coeff);
+                boolean minus =  mtx.mMatrix[i][i].multiply(coefficient).doubleValue() > mtx.mMatrix[r][i].doubleValue();
                 if(!minus) {
-                    for(int c = 0; c < mColums; c++) {
-                        if(mtx.mMatrix[i][c] == 0) {
+                    for(int c = 0; c < mColumns; c++) {
+                        if(mtx.mMatrix[i][c].equals(0)) {
                             continue;
                         }
-                        mtx.mMatrix[r][c] = mtx.mMatrix[r][c] - mtx.mMatrix[i][c] * coefficient;
+                        mtx.mMatrix[r][c] = mtx.mMatrix[r][c].subtract(mtx.mMatrix[i][c].multiply(coefficient));
                     }
                 } else {
-                    for(int c = 0; c < mColums; c++) {
-                        if (mtx.mMatrix[i][c] == 0) {
+                    for(int c = 0; c < mColumns; c++) {
+                        if (mtx.mMatrix[i][c].equals(0)) {
                             continue;
                         }
-                        mtx.mMatrix[r][c] = mtx.mMatrix[r][c] + mtx.mMatrix[i][c] * coefficient;
+                        mtx.mMatrix[r][c] = mtx.mMatrix[r][c].add(mtx.mMatrix[i][c].multiply(coefficient));
                     }
                 }
             }
-            determinant *= mtx.mMatrix[r][r];
+            determinant = determinant.multiply(mtx.mMatrix[r][r]);
         }
-        return determinant;
+        return determinant.doubleValue();
     }
 
-
     private Matrix generateAdditionalMatrix() {
-        Matrix mtx = new Matrix(mRows, mColums * 2 - 1);
-        for(int c = 0; c < mColums; c++) {
+        Matrix mtx = new Matrix(mRows, mColumns * 2 - 1);
+        for(int c = 0; c < mColumns; c++) {
             for(int r = 0; r < mRows; r++) {
                 mtx.mMatrix[r][c] = this.mMatrix[r][c];
             }
         }
-        for(int c = mColums; c < mColums * 2 - 1; c++) {
+        for(int c = mColumns; c < mColumns * 2 - 1; c++) {
             for(int r = 0; r < mRows; r++) {
-                mtx.mMatrix[r][c] = mtx.mMatrix[r][c-mColums];
+                mtx.mMatrix[r][c] = mtx.mMatrix[r][c-mColumns];
             }
         }
         return mtx;
     }
 
-    private double singleElementMatrixDeterminant() {
-        return mMatrix[0][0];
-    }
-
-    private double quadElementsMatrixDeterminant() {
-        return mMatrix[0][0] * mMatrix[1][1] - mMatrix[0][1] * mMatrix[1][0];
-    }
-
-    private double methodOfTriangles() {
-        Matrix mtx = generateAdditionalMatrix();
-
-        int res = 0;
-        for(int i = 0; i < mColums; i++) {
-            int mult = 1;
-            for(int k = 0; k < mColums; k++) {
-                mult *= mtx.mMatrix[k][k+i];
-            }
-            res += mult;
-        }
-        for(int i = 0; i < mColums; i++) {
-            int mult = 1;
-            for(int k = this.mColums-1, j = this.mColums-1; k < mtx.mColums; k++, j--) {
-                mult *= mtx.mMatrix[this.mRows - 1 - j][mtx.mColums - 1 - k + i];
-            }
-            res -= mult;
-        }
-        return res;
-    }
-
     private Matrix calculateMatrixOfMinor() {
-        Matrix matrixOfMinor = new Matrix(this.mRows, this.mColums);
-        for(int c = 0; c < mColums; c++) {
+        Matrix matrixOfMinors = new Matrix(this.mRows, this.mColumns);
+        for(int c = 0; c < mColumns; c++) {
             for( int r = 0; r < mRows; r++) {
-                matrixOfMinor.mMatrix[c][r] = this.calculateMinorValue(c, r);
+                matrixOfMinors.mMatrix[c][r] = this.calculateMinorValue(c, r);
             }
         }
-        return matrixOfMinor;
+        return matrixOfMinors;
     }
 
-    private double calculateMinorValue(int c, int r) {
-        double minor = 0;
-        Matrix minorMatrix = new Matrix(this.mRows-1, this.mColums-1);
-        for(int cc = 0, mc = 0; cc < this.mColums; cc++) {
-            if(cc == c) {
+    private Fraction calculateMinorValue(int remColumn, int remRow) {
+        Fraction minor = new Fraction(0);
+        Matrix minorsSubmatrix = new Matrix(this.mRows-1, this.mColumns-1);
+        for(int c = 0, mc = 0; c < this.mColumns; c++) {
+            if(c == remColumn) {
                 continue;
             }
-            for (int rr = 0, mr = 0; rr < this.mRows; rr++) {
-                if(rr == r)
+            for (int r = 0, mr = 0; r < this.mRows; r++) {
+                if(r == remRow)
                 {
                     continue;
                 }
-                minorMatrix.mMatrix[mc][mr] = this.mMatrix[cc][rr];
+                minorsSubmatrix.mMatrix[mc][mr] = this.mMatrix[c][r];
                 mr++;
             }
             mc++;
         }
         try {
-            minor = minorMatrix.getDeterminant();
+            minor = new Fraction(minorsSubmatrix.getDeterminant());
         } catch(Exception e) {
-            System.out.println("Exception in getDeterminant-calculateMinorValue-calculateMatrixOfMinor-getReveseMatrix");
+            System.out.println("Exception in getDeterminant-calculateMinorValue-calculateMatrixOfMinor-getReverseMatrix");
         }
         return minor;
     }
 
     private Matrix MatrixOfAlgebraicAddtitions() {
         Matrix maa = new Matrix(this);
-        for(int c = 0; c < this.mColums; c++) {
+        for(int c = 0; c < this.mColumns; c++) {
             for(int r = 0; r < this.mRows; r++) {
                 if (c % 2 == 0) {
                     if (r % 2 != 0) {
-                        maa.mMatrix[c][r] = -this.mMatrix[c][r];
+                        maa.mMatrix[c][r] = maa.mMatrix[c][r].negate();
                     }
                 } else {
                     if (r % 2 == 0) {
-                        maa.mMatrix[c][r] = -this.mMatrix[c][r];
+                        maa.mMatrix[c][r] = this.mMatrix[c][r].negate();
                     }
                 }
             }
@@ -382,7 +374,7 @@ public class Matrix {
         return maa;
     }
 
-    public void invertibleMatrix() {
+    public Matrix invertibleMatrix() {
         Matrix resMatrix;
         double detResMatrix = 0;
         try {
@@ -396,11 +388,7 @@ public class Matrix {
         Matrix matrixOfMinors = calculateMatrixOfMinor();
         Matrix matrixOfAdditionals = matrixOfMinors.MatrixOfAlgebraicAddtitions();
         Matrix tMatrixOfAdditionals = matrixOfAdditionals.transposition();
-        //resMatrix = Matrix.multiply(tMatrixOfAdditionals, 1/detResMatrix);
-        return;// TODO Because here now I used int - I need to multiply
-        //return resMatrix;
+        resMatrix = Matrix.multiply(tMatrixOfAdditionals, 1/detResMatrix);
+        return resMatrix;
     }
-
-
-
 }

@@ -9,13 +9,15 @@ public class Main {
         System.out.println("Matrix A:");
         A = new Matrix(5, 5);
         A.set("matrix_square_1.txt");
-        A.printRound();
+        A.print();
         try {
-            double x = A.getDeterminant();
-            System.out.println("det = " + x);
-        } catch (Exception e) {
-
-        }
+            B = A.invertibleMatrix();
+            System.out.println("B:");
+            B.print();
+            C = Matrix.multiplyMatrises(A,B);
+            System.out.println("C:");
+            C.print();
+        } catch (Exception e) {}
 
     }
 }
