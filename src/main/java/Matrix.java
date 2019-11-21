@@ -1,7 +1,7 @@
 //TODO probable i need to use class Either or Optional to avoid throwing of exceptions
 //TODO rework input from file.
-//TODO probably i need to leave fraction 3/5 5/22 etc instead of 3.2 2.1 etc
 // сломался, когда спереди были пробелы
+// ломается на размере матрицы больше, чем 4
 
 import java.lang.Math;
 import java.io.*;
@@ -60,7 +60,11 @@ public class Matrix {
         for(int r = 0; r < mRows; r++) {
             System.out.print(" |\t");
             for(int c = 0; c < mColumns; c++) {
-                System.out.print(mMatrix[r][c] + "\t");
+                if(mMatrix[r][c].getDenominator() != 1) {
+                    System.out.print(mMatrix[r][c].getNumerator() + "/" + mMatrix[r][c].getDenominator() + "\t");
+                } else {
+                    System.out.print(mMatrix[r][c].getNumerator() + "\t");
+                }
             }
             System.out.println("|");
         }
@@ -199,6 +203,7 @@ public class Matrix {
         return true;
     }
 
+    @Override
     public int hashCode() {
         //TODO
 
@@ -220,11 +225,11 @@ public class Matrix {
         return sb.toString();
     }
 
-    public double getDeterminant() throws Exception{
+    public Fraction getDeterminant() throws Exception{
         if(!isSquareMatrix()) {
             throw new Exception();
         }
-        double determinant = 0;
+        Fraction determinant = new Fraction(0);
         if (this.mColumns == 1) {
             determinant = singleElementMatrixDeterminant();
         } else if (this.mColumns == 2) {
@@ -237,15 +242,15 @@ public class Matrix {
         return determinant;
     }
 
-    private double singleElementMatrixDeterminant() {
-        return mMatrix[0][0].doubleValue();
+    private Fraction singleElementMatrixDeterminant() {
+        return mMatrix[0][0];
     }
 
-    private double quadElementsMatrixDeterminant() {
-        return (mMatrix[0][0].multiply(mMatrix[1][1])).subtract(mMatrix[0][1].multiply(mMatrix[1][0])).doubleValue();
+    private Fraction quadElementsMatrixDeterminant() {
+        return (mMatrix[0][0].multiply(mMatrix[1][1])).subtract(mMatrix[0][1].multiply(mMatrix[1][0]));
     }
 
-    private double methodOfTriangles() {
+    private Fraction methodOfTriangles() {
         Matrix mtx = generateAdditionalMatrix();
         Fraction res = new Fraction(0);
         for(int i = 0; i < mColumns; i++) {
@@ -262,17 +267,16 @@ public class Matrix {
             }
             res = res.subtract(subtractPart);
         }
-        return res.doubleValue();
+        return res;
     }
 
-    private double methodForN() {
-
+    private Fraction methodForN() {
         Matrix mtx = new Matrix(this);
         Fraction determinant = new Fraction(1);
         for(int r = 1; r < mRows; r++) {
             for(int i = 0; i < r; i++) {
-                double coeff = (mtx.mMatrix[r][i].divide(mtx.mMatrix[i][i])).doubleValue();
-                if(coeff == 0) {
+                Fraction coeff = mtx.mMatrix[r][i].divide(mtx.mMatrix[i][i]);
+                if(coeff.equals(0)) {
                     boolean check = false;
                     for(int index = 0; index < mRows; index++) {
                         if(!mMatrix[r][i].equals(0)) {
@@ -280,10 +284,10 @@ public class Matrix {
                         }
                     }
                     if(check == false) {
-                        return 0;
+                        return new Fraction(0);
                     }
                 }
-                Fraction coefficient = new Fraction(coeff);
+                Fraction coefficient = coeff;
                 boolean minus =  mtx.mMatrix[i][i].multiply(coefficient).doubleValue() > mtx.mMatrix[r][i].doubleValue();
                 if(!minus) {
                     for(int c = 0; c < mColumns; c++) {
@@ -301,9 +305,10 @@ public class Matrix {
                     }
                 }
             }
+            System.out.println("local determ = " + determinant);
             determinant = determinant.multiply(mtx.mMatrix[r][r]);
         }
-        return determinant.doubleValue();
+        return determinant;
     }
 
     private Matrix generateAdditionalMatrix() {
@@ -325,6 +330,7 @@ public class Matrix {
         Matrix matrixOfMinors = new Matrix(this.mRows, this.mColumns);
         for(int c = 0; c < mColumns; c++) {
             for( int r = 0; r < mRows; r++) {
+                System.out.print("value for A " + c + " " + r + " ");
                 matrixOfMinors.mMatrix[c][r] = this.calculateMinorValue(c, r);
             }
         }
@@ -349,7 +355,7 @@ public class Matrix {
             mc++;
         }
         try {
-            minor = new Fraction(minorsSubmatrix.getDeterminant());
+            minor = minorsSubmatrix.getDeterminant();
         } catch(Exception e) {
             System.out.println("Exception in getDeterminant-calculateMinorValue-calculateMatrixOfMinor-getReverseMatrix");
         }
@@ -376,19 +382,23 @@ public class Matrix {
 
     public Matrix invertibleMatrix() {
         Matrix resMatrix;
-        double detResMatrix = 0;
+        Fraction detResMatrix = new Fraction(0);
         try {
             detResMatrix = this.getDeterminant();
-            if(detResMatrix == 0) {
+            System.out.println("determinant of A: " + detResMatrix);
+            if(detResMatrix.equals(0)) {
                 throw new Exception();
             }
         } catch (Exception e) {
             System.out.println("getDetterminant exception in reverse Matrix");
         }
         Matrix matrixOfMinors = calculateMatrixOfMinor();
+        System.out.println("matrix of minors: ");
+        matrixOfMinors.print();
         Matrix matrixOfAdditionals = matrixOfMinors.MatrixOfAlgebraicAddtitions();
         Matrix tMatrixOfAdditionals = matrixOfAdditionals.transposition();
-        resMatrix = Matrix.multiply(tMatrixOfAdditionals, 1/detResMatrix);
+        Fraction one = new Fraction(1);
+        resMatrix = Matrix.multiply(tMatrixOfAdditionals, 1);
         return resMatrix;
     }
 }

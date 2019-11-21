@@ -12,11 +12,11 @@ public class Main {
         A.print();
         try {
             B = A.invertibleMatrix();
-            System.out.println("B:");
-            B.print();
-            C = Matrix.multiplyMatrises(A,B);
-            System.out.println("C:");
-            C.print();
+            //System.out.println("B:");
+            //B.print();
+            //C = Matrix.multiplyMatrises(A,B);
+            //System.out.println("C:");
+            //C.print();
         } catch (Exception e) {}
 
     }
