@@ -272,7 +272,7 @@ public class Matrix {
 
     private Fraction methodForN() {
         Matrix mtx = new Matrix(this);
-        Fraction determinant = new Fraction(1);
+        Fraction determinant = mtx.mMatrix[0][0];
         for(int r = 1; r < mRows; r++) {
             for(int i = 0; i < r; i++) {
                 Fraction coeff = mtx.mMatrix[r][i].divide(mtx.mMatrix[i][i]);
@@ -305,7 +305,6 @@ public class Matrix {
                     }
                 }
             }
-            System.out.println("local determ = " + determinant);
             determinant = determinant.multiply(mtx.mMatrix[r][r]);
         }
         return determinant;
@@ -330,7 +329,6 @@ public class Matrix {
         Matrix matrixOfMinors = new Matrix(this.mRows, this.mColumns);
         for(int c = 0; c < mColumns; c++) {
             for( int r = 0; r < mRows; r++) {
-                System.out.print("value for A " + c + " " + r + " ");
                 matrixOfMinors.mMatrix[c][r] = this.calculateMinorValue(c, r);
             }
         }
@@ -381,11 +379,10 @@ public class Matrix {
     }
 
     public Matrix invertibleMatrix() {
-        Matrix resMatrix;
+        Matrix resMatrix = new Matrix(mRows,mColumns);
         Fraction detResMatrix = new Fraction(0);
         try {
             detResMatrix = this.getDeterminant();
-            System.out.println("determinant of A: " + detResMatrix);
             if(detResMatrix.equals(0)) {
                 throw new Exception();
             }
@@ -393,12 +390,14 @@ public class Matrix {
             System.out.println("getDetterminant exception in reverse Matrix");
         }
         Matrix matrixOfMinors = calculateMatrixOfMinor();
-        System.out.println("matrix of minors: ");
         matrixOfMinors.print();
         Matrix matrixOfAdditionals = matrixOfMinors.MatrixOfAlgebraicAddtitions();
         Matrix tMatrixOfAdditionals = matrixOfAdditionals.transposition();
-        Fraction one = new Fraction(1);
-        resMatrix = Matrix.multiply(tMatrixOfAdditionals, 1);
+        System.out.println(detResMatrix);
+        for(int i = 0; i < mColumns; i++) {
+            resMatrix.mMatrix[i][i] = tMatrixOfAdditionals.mMatrix[i][i].divide(detResMatrix);
+        }
+        //resMatrix = Matrix.multiply(tMatrixOfAdditionals, );
         return resMatrix;
     }
 }
