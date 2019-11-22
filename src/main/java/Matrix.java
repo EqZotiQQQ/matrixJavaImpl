@@ -162,6 +162,7 @@ public class Matrix {
 
     public static Matrix multiplyMatrises(Matrix mtx1, Matrix mtx2) throws Exception {
         if(mtx1.mRows != mtx2.mColumns) {
+            System.out.println("multiply mtx?");
             throw new Exception();
         }
         Matrix resMtx = new Matrix(mtx1.mRows, mtx2.mColumns);
@@ -227,9 +228,10 @@ public class Matrix {
 
     public Fraction getDeterminant() throws Exception{
         if(!isSquareMatrix()) {
+            System.out.println("Here?");
             throw new Exception();
         }
-        Fraction determinant = new Fraction(0);
+        Fraction determinant;
         if (this.mColumns == 1) {
             determinant = singleElementMatrixDeterminant();
         } else if (this.mColumns == 2) {
@@ -237,7 +239,7 @@ public class Matrix {
         } else if (this.mColumns == 3) {
             determinant = methodOfTriangles();
         } else {
-            determinant = methodForN();
+            determinant = methodForN(false);//need true
         }
         return determinant;
     }
@@ -270,44 +272,68 @@ public class Matrix {
         return res;
     }
 
-    private Fraction methodForN() {
-        Matrix mtx = new Matrix(this);
-        Fraction determinant = mtx.mMatrix[0][0];
-        for(int r = 1; r < mRows; r++) {
-            for(int i = 0; i < r; i++) {
-                Fraction coeff = mtx.mMatrix[r][i].divide(mtx.mMatrix[i][i]);
-                if(coeff.equals(0)) {
-                    boolean check = false;
-                    for(int index = 0; index < mRows; index++) {
-                        if(!mMatrix[r][i].equals(0)) {
-                            check = true;
-                        }
+    private Fraction methodForN(boolean botTriangle) {
+        if(botTriangle) {
+            Fraction determinant = this.mMatrix[0][0];
+            Matrix mtx = new Matrix(this);
+            for (int r = 1; r < mRows; r++) {
+                for (int i = 0; i < r; i++) {
+                    Fraction coeff = mtx.mMatrix[r][i].divide(mtx.mMatrix[i][i]);
+                    if (coeff.equals(0)) { //if we get matrix[i][i], for example == 0 we have an error
+                        determinant = methodForN(!botTriangle);
                     }
-                    if(check == false) {
-                        return new Fraction(0);
+                    Fraction coefficient = coeff;
+                    boolean minus = mtx.mMatrix[i][i].multiply(coefficient).doubleValue() > mtx.mMatrix[r][i].doubleValue();
+                    if (!minus) {
+                        for (int c = 0; c < mColumns; c++) {
+                            if (mtx.mMatrix[i][c].equals(0)) {
+                                continue;
+                            }
+                            mtx.mMatrix[r][c] = mtx.mMatrix[r][c].subtract(mtx.mMatrix[i][c].multiply(coefficient));
+                        }
+                    } else {
+                        for (int c = 0; c < mColumns; c++) {
+                            if (mtx.mMatrix[i][c].equals(0)) {
+                                continue;
+                            }
+                            mtx.mMatrix[r][c] = mtx.mMatrix[r][c].add(mtx.mMatrix[i][c].multiply(coefficient));
+                        }
                     }
                 }
-                Fraction coefficient = coeff;
-                boolean minus =  mtx.mMatrix[i][i].multiply(coefficient).doubleValue() > mtx.mMatrix[r][i].doubleValue();
-                if(!minus) {
-                    for(int c = 0; c < mColumns; c++) {
-                        if(mtx.mMatrix[i][c].equals(0)) {
-                            continue;
-                        }
-                        mtx.mMatrix[r][c] = mtx.mMatrix[r][c].subtract(mtx.mMatrix[i][c].multiply(coefficient));
-                    }
-                } else {
-                    for(int c = 0; c < mColumns; c++) {
-                        if (mtx.mMatrix[i][c].equals(0)) {
-                            continue;
-                        }
-                        mtx.mMatrix[r][c] = mtx.mMatrix[r][c].add(mtx.mMatrix[i][c].multiply(coefficient));
-                    }
-                }
+                determinant = determinant.multiply(mtx.mMatrix[r][r]);
             }
-            determinant = determinant.multiply(mtx.mMatrix[r][r]);
+            return determinant;
+        } else {
+            Matrix mtx = new Matrix(this);
+            Fraction determinant = mtx.mMatrix[0][mColumns-1];
+            for (int r = mRows-2; r >= 0; r--) {
+                for (int i = 0; i < r; i++) {
+                    Fraction coeff = mtx.mMatrix[r][i].divide(mtx.mMatrix[r-i][i]);
+                    if (coeff.equals(0)) { //if we get matrix[i][i], for example == 0 we have an error
+                        determinant = methodForN(!botTriangle);
+                    }
+                    Fraction coefficient = coeff;
+                    boolean minus = mtx.mMatrix[i][i].multiply(coefficient).doubleValue() > mtx.mMatrix[r][i].doubleValue();
+                    if (!minus) {
+                        for (int c = 0; c < mColumns; c++) {
+                            if (mtx.mMatrix[i][c].equals(0)) {
+                                continue;
+                            }
+                            mtx.mMatrix[r][c] = mtx.mMatrix[r][c].subtract(mtx.mMatrix[i][c].multiply(coefficient));
+                        }
+                    } else {
+                        for (int c = 0; c < mColumns; c++) {
+                            if (mtx.mMatrix[i][c].equals(0)) {
+                                continue;
+                            }
+                            mtx.mMatrix[r][c] = mtx.mMatrix[r][c].add(mtx.mMatrix[i][c].multiply(coefficient));
+                        }
+                    }
+                }
+                determinant = determinant.multiply(mtx.mMatrix[r][r]);
+            }
+            return determinant;
         }
-        return determinant;
     }
 
     private Matrix generateAdditionalMatrix() {
@@ -379,26 +405,41 @@ public class Matrix {
     }
 
     public Matrix invertibleMatrix() {
-        Matrix resMatrix = new Matrix(mRows,mColumns);
         Fraction detResMatrix = new Fraction(0);
         try {
             detResMatrix = this.getDeterminant();
             if(detResMatrix.equals(0)) {
+                System.out.println("invert matr?");
                 throw new Exception();
             }
         } catch (Exception e) {
             System.out.println("getDetterminant exception in reverse Matrix");
         }
         Matrix matrixOfMinors = calculateMatrixOfMinor();
+        System.out.println("matrixOfMinors");
         matrixOfMinors.print();
         Matrix matrixOfAdditionals = matrixOfMinors.MatrixOfAlgebraicAddtitions();
+        System.out.println("matrixOfAdditionals");
+        matrixOfAdditionals.print();
         Matrix tMatrixOfAdditionals = matrixOfAdditionals.transposition();
-        System.out.println("determinant of A = " + detResMatrix);
+        System.out.println("tMatrixOfAdditionals");
+        tMatrixOfAdditionals.print();
+        Matrix resMatrix = multiplyByReciprocalDeterminant(detResMatrix, tMatrixOfAdditionals);
+        return resMatrix;
+    }
+
+    private Matrix multiplyByReciprocalDeterminant(Fraction detResMatrix, Matrix tMatrixOfAdditionals) {
+        System.out.println("1/det = " + detResMatrix.reciprocal());
+        Fraction reciprcalDeterminant = detResMatrix.reciprocal();
+        Matrix resMatrix = new Matrix(mRows,mColumns);
         for(int r = 0; r < mRows; r++) {
             for(int c = 0; c < mColumns; c++) {
-                resMatrix.mMatrix[r][c] = detResMatrix.reciprocal().multiply(tMatrixOfAdditionals.mMatrix[r][c]);
+                resMatrix.mMatrix[r][c] = tMatrixOfAdditionals.mMatrix[r][c].multiply(reciprcalDeterminant);
             }
         }
         return resMatrix;
     }
+
 }
+
+
