@@ -12,10 +12,10 @@ public class Main {
         A.print();
         try {
             B = A.invertibleMatrix();
-            System.out.println("B:");
+            System.out.println("B = A^-1:");
             B.print();
             C = Matrix.multiplyMatrises(A,B);
-            System.out.println("C:");
+            System.out.println("C = A x B:");
             C.print();
         } catch (Exception e) {}
 

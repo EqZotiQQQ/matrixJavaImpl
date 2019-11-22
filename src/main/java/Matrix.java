@@ -393,11 +393,12 @@ public class Matrix {
         matrixOfMinors.print();
         Matrix matrixOfAdditionals = matrixOfMinors.MatrixOfAlgebraicAddtitions();
         Matrix tMatrixOfAdditionals = matrixOfAdditionals.transposition();
-        System.out.println(detResMatrix);
-        for(int i = 0; i < mColumns; i++) {
-            resMatrix.mMatrix[i][i] = tMatrixOfAdditionals.mMatrix[i][i].divide(detResMatrix);
+        System.out.println("determinant of A = " + detResMatrix);
+        for(int r = 0; r < mRows; r++) {
+            for(int c = 0; c < mColumns; c++) {
+                resMatrix.mMatrix[r][c] = detResMatrix.reciprocal().multiply(tMatrixOfAdditionals.mMatrix[r][c]);
+            }
         }
-        //resMatrix = Matrix.multiply(tMatrixOfAdditionals, );
         return resMatrix;
     }
 }
